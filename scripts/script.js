@@ -6,8 +6,8 @@ $(document).ready(function() {
 	$('.list').sortable();
 
 	// Event listener for creating new lists
-	$('#newList').keyup(function(event) {
-		if (event.key == 'Enter' || event.keyCode == '13') {
+	$('#newList').on('keyup', function(e) {
+		if (event.key === 'Enter' || event.keyCode === '13') {
 			$(this).before(
 				'<div class="list"><h2 class="listHeader">' +
 					$(this).val() +
