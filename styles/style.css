@@ -207,3 +207,11 @@ body {
 	height: 30px;
 	font-size: 1.2rem;
 }
+
+.card {
+	background: #fff;
+	margin-bottom: 1rem;
+	border-radius: 4px;
+	padding: 1rem 0;
+	font-size: 1.2rem;
+}
