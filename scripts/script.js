@@ -1,4 +1,8 @@
 $(document).ready(function() {
+	// Make lists sortable
+	$('.board').sortable();
+
+	// Event listener for creating new lists
 	$('input[name="newList"]').keyup(function(event) {
 		if (event.key == 'Enter' || event.keyCode == '13') {
 			$(this).before(
