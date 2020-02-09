@@ -1,3 +1,28 @@
+var firebaseConfig = {
+	apiKey: 'AIzaSyAkWrlB49WYt1Er1-pnmIJo65MgNsWYKds',
+	authDomain: 'nimble-io.firebaseapp.com',
+	databaseURL: 'https://nimble-io.firebaseio.com',
+	projectId: 'nimble-io',
+	storageBucket: 'nimble-io.appspot.com',
+	messagingSenderId: '796601610417',
+	appId: '1:796601610417:web:df8ea13e938768ef793290'
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
+db.collection('lists')
+	.get()
+	.then(function(querySnapshot) {
+		querySnapshot.forEach(function(doc) {
+			// doc.data() is never undefined for query doc snapshots
+			console.log(doc.id, ' => ', doc.data());
+		});
+	});
+
+// MAIN
+
 $(document).ready(function() {
 	// Make lists sortable
 	$('.listContainer').sortable();
