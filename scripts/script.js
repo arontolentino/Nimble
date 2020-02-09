@@ -3,7 +3,7 @@ $(document).ready(function() {
 	$('.listContainer').sortable();
 
 	// Make cards sortable
-	$('.cardContainer').sortable();
+	$('.cardContainer').sortable({ connectWith: '.cardContainer' });
 
 	// Event listener for creating new lists
 	$('#newList').on('keyup', function(e) {
