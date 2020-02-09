@@ -160,6 +160,8 @@ input::-moz-focus-inner {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 .visuallyHidden:not(:focus):not(:active) {
@@ -177,41 +179,96 @@ input::-moz-focus-inner {
 
 /* USER-GENERATED STYLES */
 
-body {
+html {
 	font-size: 62.5%;
 	font-family: 'Heebo', sans-serif;
 }
 
+main {
+	padding: 2rem 2rem;
+}
+
+h1 {
+	font-size: 3.2rem;
+}
+
+h2 {
+	font-size: 2.6rem;
+}
+
+p {
+	font-size: 1.7rem;
+	font-weight: 500;
+}
+
+input {
+	padding-left: 1rem;
+}
+
 .board {
 	display: flex;
-	padding: 1rem 1rem;
+}
+
+.projectDetails {
+	margin-bottom: 3rem;
+}
+
+.listContainer {
+	display: flex;
 }
 
 .list {
-	background: #f4f4f4;
-	padding: 1rem 1rem;
-	border-radius: 4px;
-	margin-right: 1rem;
+	margin-right: 2.6rem;
 }
 
 .listHeader {
-	font-size: 1.6rem;
+	margin-bottom: 2rem;
 }
 
-.newList {
-	height: 50px;
+.cardContainer {
+	background: #f4f4f4;
+	border-radius: 10px;
+	padding: 1.4rem 1.3rem;
+	width: 316px;
+	margin-bottom: 2rem;
+}
+
+.card {
+	background: #fff;
+	border-radius: 10px;
+	padding: 3rem 4rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+}
+
+.card:not(:last-child) {
+	margin-bottom: 1rem;
+}
+
+.newListInput {
+	height: 3.85rem;
+	font-size: 1.2rem;
+	margin-bottom: 2rem;
+}
+
+.newList .cardContainer {
+	height: 15rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.addIcon {
+	background: #fff;
+	padding: 13px;
+	border-radius: 50%;
 	font-size: 1.2rem;
 }
 
 .newCard {
 	height: 30px;
 	font-size: 1.2rem;
-}
-
-.card {
-	background: #fff;
-	margin-bottom: 1rem;
-	border-radius: 4px;
-	padding: 1rem 0;
-	font-size: 1.2rem;
+	width: 100%;
+	border: 1px solid lightgrey;
+	border-radius: 10px;
 }

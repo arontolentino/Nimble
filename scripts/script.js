@@ -1,9 +1,9 @@
 $(document).ready(function() {
 	// Make lists sortable
-	$('.board').sortable();
+	$('.listContainer').sortable();
 
 	// Make cards sortable
-	$('.list').sortable();
+	$('.cardContainer').sortable();
 
 	// Event listener for creating new lists
 	$('#newList').on('keyup', function(e) {

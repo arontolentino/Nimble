@@ -5,6 +5,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+		/>
+
+		<link
 			href="https://fonts.googleapis.com/css?family=Heebo:400,500,700,900&display=swap"
 			rel="stylesheet"
 		/>
@@ -16,7 +21,98 @@
 		<header></header>
 
 		<main>
+			<div class="projectDetails">
+				<h1>Project Lorem</h1>
+			</div>
 			<div class="board">
+				<div class="listContainer">
+					<div class="list">
+						<div class="listHeader">
+							<h2>Backlog</h2>
+						</div>
+						<div class="cardContainer">
+							<div class="card">
+								<p>E-mail after registration so that I can confirm my</p>
+							</div>
+							<div class="card">
+								<p>Find top 5 customers and get reviews from them</p>
+							</div>
+							<div class="card">
+								<p>Two-factor authentication to make private</p>
+							</div>
+							<div class="card">
+								<p>Find top 5 customers and get reviews from them</p>
+							</div>
+						</div>
+						<input
+							type="text"
+							class="newCard"
+							id="newCard"
+							name="newCard"
+							placeholder="Create new card"
+						/>
+					</div>
+
+					<div class="list">
+						<div class="listHeader">
+							<h2>In-Progress</h2>
+						</div>
+						<div class="cardContainer">
+							<div class="card">
+								<p>E-mail after registration so that I can confirm my</p>
+							</div>
+							<div class="card">
+								<p>E-mail after registration so that I can confirm my</p>
+							</div>
+						</div>
+						<input
+							type="text"
+							class="newCard"
+							id="newCard"
+							name="newCard"
+							placeholder="Create new card"
+						/>
+					</div>
+
+					<div class="list">
+						<div class="listHeader">
+							<h2>Done</h2>
+						</div>
+						<div class="cardContainer">
+							<div class="card">
+								<p>E-mail after registration so that I can confirm my</p>
+							</div>
+							<div class="card">
+								<p>E-mail after registration so that I can confirm my</p>
+							</div>
+						</div>
+						<input
+							type="text"
+							class="newCard"
+							id="newCard"
+							name="newCard"
+							placeholder="Create new card"
+						/>
+					</div>
+
+					<div class="newList">
+						<div class="newListInput">
+							<input
+								type="text"
+								class="newCard"
+								id="newCard"
+								name="newCard"
+								placeholder="Create new list"
+							/>
+						</div>
+
+						<div class="cardContainer">
+							<i class="fas fa-plus addIcon"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="board">
 				<input
 					type="text"
 					class="newList"
@@ -24,7 +120,7 @@
 					name="newList"
 					placeholder="Add New List..."
 				/>
-			</div>
+			</div> -->
 		</main>
 
 		<footer></footer>
