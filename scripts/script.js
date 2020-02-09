@@ -3,7 +3,30 @@ $(document).ready(function() {
 	$('.listContainer').sortable();
 
 	// Make cards sortable
-	$('.cardContainer').sortable({ connectWith: '.cardContainer' });
+	$('.cardContainer').sortable({
+		connectWith: '.cardContainer',
+		create(event, ui) {
+			console.log('An item was created');
+		},
+		stop(event, ui) {
+			console.log('An item was moved');
+			// console.log(event);
+			// console.log(ui);
+			// var sortedIDs = $('#done').sortable('toArray');
+			// console.log(sortedIDs);
+		},
+		remove(event, ui) {
+			console.log('Item was removed');
+			// // Find the ID of the list a card transfered from
+			// console.log(this.id);
+		},
+		receive: function(event, ui) {
+			console.log('Item was received');
+			// console.log(this.id);
+			// // Find the ID of the list a card transfered to
+			// console.log(this.id);
+		}
+	});
 
 	// Event listener for creating new lists
 	$('#newList').on('keyup', function(e) {
