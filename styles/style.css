@@ -239,6 +239,7 @@ input {
 	padding: 3rem 4rem;
 	font-size: 1.05rem;
 	font-weight: 700;
+	list-style: none;
 }
 
 .card:not(:last-child) {

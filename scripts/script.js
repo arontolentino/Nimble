@@ -27,12 +27,12 @@ db.collection('boards')
 					const listCards = res.data().cards;
 
 					const newList = `
-						<div class="list">
+						<div class="list" id="${list}">
 							<div class="listHeader">
 								<h2>${listName}</h2>
 							</div>
-							<div class="cardContainer" id="${list}">
-							</div>
+							<ul class="cardContainer">
+							</ul>
 							<input
 								type="text"
 								class="newCard"
@@ -57,12 +57,12 @@ db.collection('boards')
 
 									// Markup for new card
 									let newCard = `
-										<div class="card" id=${card}>
+										<li class="card" id=${card}>
 											<p>${cardContent}</p>
-										</div>`;
+										</li>`;
 
 									// Add new card markup with dynamic list name
-									$(newCard).appendTo(`#${list}`);
+									$(newCard).appendTo(`#${list} .cardContainer`);
 								})
 								.catch(function(error) {
 									console.log('Error getting documents: ', error);
@@ -74,6 +74,7 @@ db.collection('boards')
 				.catch(function(error) {
 					console.log('Error getting documents: ', error);
 				});
+			createSortableList();
 		}
 	})
 	.catch(function(error) {
@@ -83,22 +84,30 @@ db.collection('boards')
 function createSortableCards() {
 	$('.cardContainer').sortable({
 		connectWith: '.cardContainer',
-		create(event, ui) {
-			console.log('An item was created');
+		// create(event, ui) {
+		// 	console.log('An item was created');
 
-			var sortedIDs = $(`#${this.id}`).sortable('toArray');
-			console.log(this.id);
-			console.log(sortedIDs);
-		},
+		// 	var sortedIDs = $(`#${this.id}`).sortable('toArray');
+		// 	console.log(this.id);
+		// 	console.log(sortedIDs);
+		// },
 		stop(event, ui) {
 			console.log('An item was moved');
+			console.log(
+				$(this)
+					.parent()
+					.attr('id')
+			);
 
-			var sortedIDs = $(`#${this.id}`).sortable('toArray');
-			console.log(this.id);
+			const parentID = $(this)
+				.parent()
+				.attr('id');
+
+			var sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
 			console.log(sortedIDs);
 
 			db.collection('lists')
-				.doc(this.id)
+				.doc(parentID)
 				.update({ cards: sortedIDs })
 				.then(function() {
 					console.log('Document successfully written!');
@@ -127,11 +136,33 @@ function createSortableCards() {
 	});
 }
 
+function createSortableList() {
+	$('.listContainer').sortable({
+		stop(event, ui) {
+			console.log('An item was moved');
+			console.log(this);
+
+			var sortedIDs = $(`#${this.id}`).sortable('toArray');
+			console.log(this.id);
+			console.log(sortedIDs);
+
+			// db.collection('lists')
+			// 	.doc(this.id)
+			// 	.update({ cards: sortedIDs })
+			// 	.then(function() {
+			// 		console.log('Document successfully written!');
+			// 	})
+			// 	.catch(function(error) {
+			// 		console.error('Error writing document: ', error);
+			// 	});
+		}
+	});
+}
+
 // MAIN
 
 $(document).ready(function() {
 	// Make lists sortable
-	$('.listContainer').sortable();
 
 	// Event listener for creating new lists
 	$('#newList').on('keyup', function(e) {
