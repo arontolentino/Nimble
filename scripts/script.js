@@ -96,6 +96,16 @@ function createSortableCards() {
 			var sortedIDs = $(`#${this.id}`).sortable('toArray');
 			console.log(this.id);
 			console.log(sortedIDs);
+
+			db.collection('lists')
+				.doc(this.id)
+				.update({ cards: sortedIDs })
+				.then(function() {
+					console.log('Document successfully written!');
+				})
+				.catch(function(error) {
+					console.error('Error writing document: ', error);
+				});
 		},
 		receive: function(event, ui) {
 			console.log('Item was received');
@@ -103,41 +113,38 @@ function createSortableCards() {
 			var sortedIDs = $(`#${this.id}`).sortable('toArray');
 			console.log(this.id);
 			console.log(sortedIDs);
+
+			db.collection('lists')
+				.doc(this.id)
+				.update({ cards: sortedIDs })
+				.then(function() {
+					console.log('Document successfully written!');
+				})
+				.catch(function(error) {
+					console.error('Error writing document: ', error);
+				});
 		}
 	});
 }
+
+db.collection('lists')
+	.doc(this.id)
+	.get()
+	.then(function(querySnapshot) {
+		querySnapshot.forEach(function(doc) {
+			// doc.data() is never undefined for query doc snapshots
+			console.log(doc.id, ' => ', doc.data());
+		});
+	})
+	.catch(function(error) {
+		console.log('Error getting documents: ', error);
+	});
 
 // MAIN
 
 $(document).ready(function() {
 	// Make lists sortable
 	$('.listContainer').sortable();
-
-	// Make cards sortable
-	$('.cardContainer').sortable({
-		connectWith: '.cardContainer',
-		create(event, ui) {
-			console.log('An item was created');
-		},
-		stop(event, ui) {
-			console.log('An item was moved');
-			// console.log(event);
-			// console.log(ui);
-			// var sortedIDs = $('#done').sortable('toArray');
-			// console.log(sortedIDs);
-		},
-		remove(event, ui) {
-			console.log('Item was removed');
-			// // Find the ID of the list a card transfered from
-			// console.log(this.id);
-		},
-		receive: function(event, ui) {
-			console.log('Item was received');
-			// console.log(this.id);
-			// // Find the ID of the list a card transfered to
-			// console.log(this.id);
-		}
-	});
 
 	// Event listener for creating new lists
 	$('#newList').on('keyup', function(e) {
