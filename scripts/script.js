@@ -103,7 +103,7 @@ function createSortableCards() {
 				.parent()
 				.attr('id');
 
-			var sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
+			const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
 			console.log(sortedIDs);
 
 			db.collection('lists')
@@ -119,12 +119,15 @@ function createSortableCards() {
 		receive: function(event, ui) {
 			console.log('Item was received');
 
-			var sortedIDs = $(`#${this.id}`).sortable('toArray');
-			console.log(this.id);
+			const parentID = $(this)
+				.parent()
+				.attr('id');
+
+			const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
 			console.log(sortedIDs);
 
 			db.collection('lists')
-				.doc(this.id)
+				.doc(parentID)
 				.update({ cards: sortedIDs })
 				.then(function() {
 					console.log('Document successfully written!');
