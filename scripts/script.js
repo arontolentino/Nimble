@@ -149,15 +149,15 @@ function createSortableList() {
 			console.log(this.id);
 			console.log(sortedIDs);
 
-			// db.collection('lists')
-			// 	.doc(this.id)
-			// 	.update({ cards: sortedIDs })
-			// 	.then(function() {
-			// 		console.log('Document successfully written!');
-			// 	})
-			// 	.catch(function(error) {
-			// 		console.error('Error writing document: ', error);
-			// 	});
+			db.collection('boards')
+				.doc(this.id)
+				.update({ lists: sortedIDs })
+				.then(function() {
+					console.log('Document successfully written!');
+				})
+				.catch(function(error) {
+					console.error('Error writing document: ', error);
+				});
 		}
 	});
 }
