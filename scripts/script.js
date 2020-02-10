@@ -31,7 +31,7 @@ db.collection('boards')
 							<div class="listHeader">
 								<h2>${listName}</h2>
 							</div>
-							<div class="cardContainer" id="${listName}">
+							<div class="cardContainer" id="${list}">
 							</div>
 							<input
 								type="text"
@@ -57,12 +57,12 @@ db.collection('boards')
 
 									// Markup for new card
 									let newCard = `
-										<div class="card">
+										<div class="card" id=${card}>
 											<p>${cardContent}</p>
 										</div>`;
 
 									// Add new card markup with dynamic list name
-									$(newCard).appendTo(`#${listName}`);
+									$(newCard).appendTo(`#${list}`);
 								})
 								.catch(function(error) {
 									console.log('Error getting documents: ', error);
@@ -85,24 +85,24 @@ function createSortableCards() {
 		connectWith: '.cardContainer',
 		create(event, ui) {
 			console.log('An item was created');
+
+			var sortedIDs = $(`#${this.id}`).sortable('toArray');
+			console.log(this.id);
+			console.log(sortedIDs);
 		},
 		stop(event, ui) {
 			console.log('An item was moved');
-			// console.log(event);
-			// console.log(ui);
-			// var sortedIDs = $('#done').sortable('toArray');
-			// console.log(sortedIDs);
-		},
-		remove(event, ui) {
-			console.log('Item was removed');
-			// // Find the ID of the list a card transfered from
-			// console.log(this.id);
+
+			var sortedIDs = $(`#${this.id}`).sortable('toArray');
+			console.log(this.id);
+			console.log(sortedIDs);
 		},
 		receive: function(event, ui) {
 			console.log('Item was received');
-			// console.log(this.id);
-			// // Find the ID of the list a card transfered to
-			// console.log(this.id);
+
+			var sortedIDs = $(`#${this.id}`).sortable('toArray');
+			console.log(this.id);
+			console.log(sortedIDs);
 		}
 	});
 }
