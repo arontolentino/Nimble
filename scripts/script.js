@@ -12,14 +12,100 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
-db.collection('lists')
+// Get all lists part of a specific board from Firebase
+db.collection('boards')
+	.doc('vFh5srQztWPjM5nypUEW')
 	.get()
-	.then(function(querySnapshot) {
-		querySnapshot.forEach(function(doc) {
-			// doc.data() is never undefined for query doc snapshots
-			console.log(doc.id, ' => ', doc.data());
-		});
+	.then(function(res) {
+		// Loop through they array of lists and insert in the DOM
+		for (const list of res.data().lists) {
+			db.collection('lists')
+				.doc(`${list}`)
+				.get()
+				.then(function(res) {
+					const listName = res.data().name;
+					const listCards = res.data().cards;
+
+					const newList = `
+						<div class="list">
+							<div class="listHeader">
+								<h2>${listName}</h2>
+							</div>
+							<div class="cardContainer" id="${listName}">
+							</div>
+							<input
+								type="text"
+								class="newCard"
+								id="newCard"
+								name="newCard"
+								placeholder="Create new card"
+							/>
+						</div>`;
+
+					$(newList).appendTo('.listContainer');
+
+					// Loop through they array of cards and insert in the DOM
+					if (listCards != undefined) {
+						// Loop through all cards under a specific list and get more information from firebase
+						for (const card of listCards) {
+							db.collection('cards')
+								.doc(card)
+								.get()
+								.then(function(doc) {
+									// Store card content from firebase
+									let cardContent = doc.data().content;
+
+									// Markup for new card
+									let newCard = `
+										<div class="card">
+											<p>${cardContent}</p>
+										</div>`;
+
+									// Add new card markup with dynamic list name
+									$(newCard).appendTo(`#${listName}`);
+								})
+								.catch(function(error) {
+									console.log('Error getting documents: ', error);
+								});
+						}
+					}
+					createSortableCards();
+				})
+				.catch(function(error) {
+					console.log('Error getting documents: ', error);
+				});
+		}
+	})
+	.catch(function(error) {
+		console.log('Error getting documents: ', error);
 	});
+
+function createSortableCards() {
+	$('.cardContainer').sortable({
+		connectWith: '.cardContainer',
+		create(event, ui) {
+			console.log('An item was created');
+		},
+		stop(event, ui) {
+			console.log('An item was moved');
+			// console.log(event);
+			// console.log(ui);
+			// var sortedIDs = $('#done').sortable('toArray');
+			// console.log(sortedIDs);
+		},
+		remove(event, ui) {
+			console.log('Item was removed');
+			// // Find the ID of the list a card transfered from
+			// console.log(this.id);
+		},
+		receive: function(event, ui) {
+			console.log('Item was received');
+			// console.log(this.id);
+			// // Find the ID of the list a card transfered to
+			// console.log(this.id);
+		}
+	});
+}
 
 // MAIN
 
