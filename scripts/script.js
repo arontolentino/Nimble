@@ -1,3 +1,29 @@
+/// DIRECTOR ROUTING ///
+
+const login = function() {
+	console.log('Sign in to access your projects');
+};
+const register = function() {
+	console.log('Register for an account');
+};
+const projects = function() {
+	console.log('View all your projects');
+};
+const project = function(id) {
+	console.log('You are currently viewing project ' + id);
+};
+
+const routes = {
+	'/login': login,
+	'/register': register,
+	'/projects': projects,
+	'/projects/:id': project
+};
+
+var router = Router(routes);
+
+router.init('/');
+
 /// FIREBASE INIT ///
 var firebaseConfig = {
 	apiKey: 'AIzaSyAkWrlB49WYt1Er1-pnmIJo65MgNsWYKds',
@@ -11,7 +37,7 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-/// LOGIN ///
+/ LOGIN /; //
 function signInUser(email, password) {
 	firebase
 		.auth()
@@ -46,7 +72,6 @@ function createUser(email, password) {
 			// ...
 		});
 }
-p;
 
 firebase.auth().onAuthStateChanged(function(user) {
 	if (user) {
@@ -177,6 +202,8 @@ function createSortableCards() {
 				});
 		}
 	});
+
+	$('.cardContainer').disableSelection();
 }
 
 function createSortableList() {
@@ -200,6 +227,8 @@ function createSortableList() {
 				});
 		}
 	});
+
+	$('.listContainer').disableSelection();
 }
 
 function createNewCard() {}
