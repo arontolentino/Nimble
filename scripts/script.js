@@ -1,3 +1,4 @@
+/// FIREBASE INIT ///
 var firebaseConfig = {
 	apiKey: 'AIzaSyAkWrlB49WYt1Er1-pnmIJo65MgNsWYKds',
 	authDomain: 'nimble-io.firebaseapp.com',
@@ -10,9 +11,55 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+/// LOGIN ///
+function signInUser(email, password) {
+	firebase
+		.auth()
+		.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+		.then(function() {
+			// Existing and future Auth states are now persisted in the current
+			// session only. Closing the window would clear any existing state even
+			// if a user forgets to sign out.
+			// ...
+			// New sign-in will be persisted with session persistence.
+			return firebase.auth().signInWithEmailAndPassword(email, password);
+		})
+		.catch(function(error) {
+			// Handle Errors here.
+			const errorCode = error.code;
+			const errorMessage = error.message;
+
+			console.log(`Sign in error ${errorCode}: ${errorMessage}`);
+		});
+}
+
+function createUser(email, password) {
+	firebase
+		.auth()
+		.createUserWithEmailAndPassword(email, password)
+		.catch(function(error) {
+			// Handle Errors here.
+			const errorCode = error.code;
+			const errorMessage = error.message;
+
+			console.log(`User registration error ${errorCode}: ${errorMessage}`);
+			// ...
+		});
+}
+p;
+
+firebase.auth().onAuthStateChanged(function(user) {
+	if (user) {
+		// User is signed in.
+	} else {
+		// No user is signed in.
+	}
+});
+
+/// INVIDIDUAL-PROJECT ///
+
 const db = firebase.firestore();
 
-// Get all lists part of a specific board from Firebase
 db.collection('boards')
 	.doc('vFh5srQztWPjM5nypUEW')
 	.get()
@@ -185,13 +232,16 @@ $(document).ready(function() {
 
 			const newCardContent = $(this).val();
 
+			$(this).val('');
+
 			db.collection('cards')
 				.add({
 					content: newCardContent
 				})
 				.then(function(docRef) {
+					console.log(this);
+
 					console.log('Created new card!');
-					console.log;
 
 					let newCard = `
 										<li class="card" id=${docRef.id}>
