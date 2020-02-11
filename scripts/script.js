@@ -37,7 +37,7 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-/ LOGIN /; //
+/// LOGIN ///
 function signInUser(email, password) {
 	firebase
 		.auth()
@@ -80,160 +80,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 		// No user is signed in.
 	}
 });
-
-/// INVIDIDUAL-PROJECT ///
-
-const db = firebase.firestore();
-
-db.collection('boards')
-	.doc('vFh5srQztWPjM5nypUEW')
-	.get()
-	.then(function(res) {
-		// Loop through they array of lists and insert in the DOM
-		for (const list of res.data().lists) {
-			db.collection('lists')
-				.doc(`${list}`)
-				.get()
-				.then(function(res) {
-					const listName = res.data().name;
-					const listCards = res.data().cards;
-
-					const newList = `
-						<div class="list" id="${list}">
-							<div class="listHeader">
-								<h2>${listName}</h2>
-							</div>
-							<ul class="cardContainer">
-							</ul>
-							<input
-								type="text"
-								class="newCard"
-								id="newCard"
-								name="newCard"
-								placeholder="Create new card"
-							/>
-						</div>`;
-
-					$(newList).appendTo('.listContainer');
-
-					// Loop through they array of cards and insert in the DOM
-					if (listCards != undefined) {
-						// Loop through all cards under a specific list and get more information from firebase
-						for (const card of listCards) {
-							db.collection('cards')
-								.doc(card)
-								.get()
-								.then(function(doc) {
-									// Store card content from firebase
-									let cardContent = doc.data().content;
-
-									// Markup for new card
-									let newCard = `
-										<li class="card" id=${card}>
-											<p>${cardContent}</p>
-										</li>`;
-
-									// Add new card markup with dynamic list name
-									$(newCard).appendTo(`#${list} .cardContainer`);
-								})
-								.catch(function(error) {
-									console.log('Error getting documents: ', error);
-								});
-						}
-					}
-					createSortableCards();
-				})
-				.catch(function(error) {
-					console.log('Error getting documents: ', error);
-				});
-			createSortableList();
-		}
-	})
-	.catch(function(error) {
-		console.log('Error getting documents: ', error);
-	});
-
-function createSortableCards() {
-	$('.cardContainer').sortable({
-		connectWith: '.cardContainer',
-		stop(event, ui) {
-			console.log('An item was moved');
-			console.log(
-				$(this)
-					.parent()
-					.attr('id')
-			);
-
-			const parentID = $(this)
-				.parent()
-				.attr('id');
-
-			const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
-			console.log(sortedIDs);
-
-			db.collection('lists')
-				.doc(parentID)
-				.update({ cards: sortedIDs })
-				.then(function() {
-					console.log('Document successfully written!');
-				})
-				.catch(function(error) {
-					console.error('Error writing document: ', error);
-				});
-		},
-		receive: function(event, ui) {
-			console.log('Item was received');
-
-			const parentID = $(this)
-				.parent()
-				.attr('id');
-
-			const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
-			console.log(sortedIDs);
-
-			db.collection('lists')
-				.doc(parentID)
-				.update({ cards: sortedIDs })
-				.then(function() {
-					console.log('Document successfully written!');
-				})
-				.catch(function(error) {
-					console.error('Error writing document: ', error);
-				});
-		}
-	});
-
-	$('.cardContainer').disableSelection();
-}
-
-function createSortableList() {
-	$('.listContainer').sortable({
-		stop(event, ui) {
-			console.log('An item was moved');
-			console.log(this);
-
-			var sortedIDs = $(`#${this.id}`).sortable('toArray');
-			console.log(this.id);
-			console.log(sortedIDs);
-
-			db.collection('boards')
-				.doc(this.id)
-				.update({ lists: sortedIDs })
-				.then(function() {
-					console.log('Document successfully written!');
-				})
-				.catch(function(error) {
-					console.error('Error writing document: ', error);
-				});
-		}
-	});
-
-	$('.listContainer').disableSelection();
-}
-
-function createNewCard() {}
-
-// MAIN
 
 $(document).ready(function() {
 	// Make lists sortable
@@ -302,4 +148,148 @@ $(document).ready(function() {
 
 		$('.list').sortable();
 	});
+
+	function createSortableList() {
+		$('.listContainer').sortable({
+			stop(event, ui) {
+				console.log('An item was moved');
+				console.log(this);
+
+				var sortedIDs = $(`#${this.id}`).sortable('toArray');
+				console.log(this.id);
+				console.log(sortedIDs);
+
+				db.collection('boards')
+					.doc(this.id)
+					.update({ lists: sortedIDs })
+					.then(function() {
+						console.log('Document successfully written!');
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
+			}
+		});
+	}
+
+	function createSortableCards() {
+		$('.cardContainer').sortable({
+			connectWith: '.cardContainer',
+			stop(event, ui) {
+				console.log('An item was moved');
+				console.log(
+					$(this)
+						.parent()
+						.attr('id')
+				);
+
+				const parentID = $(this)
+					.parent()
+					.attr('id');
+
+				const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
+				console.log(sortedIDs);
+
+				db.collection('lists')
+					.doc(parentID)
+					.update({ cards: sortedIDs })
+					.then(function() {
+						console.log('Document successfully written!');
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
+			},
+			receive: function(event, ui) {
+				console.log('Item was received');
+
+				const parentID = $(this)
+					.parent()
+					.attr('id');
+
+				const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
+				console.log(sortedIDs);
+
+				db.collection('lists')
+					.doc(parentID)
+					.update({ cards: sortedIDs })
+					.then(function() {
+						console.log('Document successfully written!');
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
+			}
+		});
+	}
+
+	const db = firebase.firestore();
+
+	db.collection('boards')
+		.doc('vFh5srQztWPjM5nypUEW')
+		.get()
+		.then(function(res) {
+			// Loop through they array of lists and insert in the DOM
+			for (const list of res.data().lists) {
+				db.collection('lists')
+					.doc(`${list}`)
+					.get()
+					.then(function(res) {
+						const listName = res.data().name;
+						const listCards = res.data().cards;
+
+						const newList = `
+						<div class="list" id="${list}">
+							<div class="listHeader">
+								<h2>${listName}</h2>
+							</div>
+							<ul class="cardContainer">
+							</ul>
+							<input
+								type="text"
+								class="newCard"
+								id="newCard"
+								name="newCard"
+								placeholder="Create new card"
+							/>
+						</div>`;
+
+						$(newList).appendTo('.listContainer');
+
+						// Loop through they array of cards and insert in the DOM
+						if (listCards != undefined) {
+							// Loop through all cards under a specific list and get more information from firebase
+							for (const card of listCards) {
+								db.collection('cards')
+									.doc(card)
+									.get()
+									.then(function(doc) {
+										// Store card content from firebase
+										let cardContent = doc.data().content;
+
+										// Markup for new card
+										let newCard = `
+										<li class="card" id=${card}>
+											<p>${cardContent}</p>
+										</li>`;
+
+										// Add new card markup with dynamic list name
+										$(newCard).appendTo(`#${list} .cardContainer`);
+									})
+									.catch(function(error) {
+										console.log('Error getting documents: ', error);
+									});
+							}
+						}
+						createSortableCards();
+					})
+					.catch(function(error) {
+						console.log('Error getting documents: ', error);
+					});
+				createSortableList();
+			}
+		})
+		.catch(function(error) {
+			console.log('Error getting documents: ', error);
+		});
 });
