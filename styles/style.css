@@ -240,10 +240,28 @@ input {
 	font-size: 1.05rem;
 	font-weight: 700;
 	list-style: none;
+	position: relative;
 }
 
 .card:not(:last-child) {
 	margin-bottom: 1rem;
+}
+
+.card .deleteCard {
+	position: absolute;
+	right: 20px;
+	top: 15px;
+}
+
+.deleteCard:visited,
+.deleteCard:link,
+.deleteCard:focus {
+	color: #c4c4c4;
+	transition: color 0.2s;
+}
+
+.deleteCard:hover {
+	color: #cc0000;
 }
 
 .newListInput {
