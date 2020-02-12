@@ -141,11 +141,13 @@ $(document).ready(function() {
 	}
 
 	// Event listener for creating new cards
-	$('.board').on('keyup', '#newCard', function(e) {
+	$('main').on('keyup', '#newCard', function(e) {
 		if (event.key === 'Enter' || event.keyCode === '13') {
 			const parentID = $(this)
 				.parent()
 				.attr('id');
+
+			console.log(parentID);
 
 			const newCardContent = $(this).val();
 
@@ -156,7 +158,7 @@ $(document).ready(function() {
 	});
 
 	// Event listener for deleting cards
-	$('.board').on('click', '.deleteCard', function(e) {
+	$('main').on('click', '.deleteCard', function(e) {
 		e.preventDefault();
 		const cardID = $(this)
 			.parent()
