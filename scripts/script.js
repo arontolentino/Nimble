@@ -23,17 +23,16 @@ $(document).ready(function() {
 	///======================///
 
 	const login = function() {
-		console.log('Sign in to access your projects');
+		initLogIn();
 	};
 	const register = function() {
-		console.log('Register for an account');
+		initRegister();
 	};
 	const dashboard = function() {
-		console.log('All your projects');
+		initDashboard();
 	};
 	const project = function(id) {
-		console.log('You are currently viewing project ' + id);
-		$('main').empty();
+		initProject();
 	};
 
 	const routes = {
@@ -48,10 +47,15 @@ $(document).ready(function() {
 	router.init('/');
 
 	///======================///
-	// LOGIN
+	// Log In
 	///======================///
 
-	function signInUser(email, password) {
+	function initLogIn() {
+		$('main').empty();
+		$('main').append('<h1>You can login here</h1>');
+	}
+
+	function logInUser(email, password) {
 		firebase
 			.auth()
 			.setPersistence(firebase.auth.Auth.Persistence.SESSION)
@@ -97,13 +101,28 @@ $(document).ready(function() {
 	// REGISTER
 	///======================///
 
+	function initRegister() {
+		$('main').empty();
+		$('main').append('<h1>You can register here</h1>');
+	}
+
 	///======================///
 	// DASHBOARD
 	///======================///
 
+	function initDashboard() {
+		$('main').empty();
+		$('main').append('<h1>Dashboard</h1>');
+	}
+
 	///======================///
 	// PROJECT
 	///======================///
+
+	function initProject() {
+		$('main').empty();
+		$('main').append('<h1>You can login here</h1>');
+	}
 
 	loadProject();
 
@@ -244,23 +263,24 @@ $(document).ready(function() {
 							const listName = res.data().name;
 							const listCards = res.data().cards;
 
-							const newList = `
-						<div class="list" id="${list}">
-							<div class="listHeader">
-								<h2>${listName}</h2>
-							</div>
-							<ul class="cardContainer">
-							</ul>
-							<input
-								type="text"
-								class="newCard"
-								id="newCard"
-								name="newCard"
-								placeholder="Create new card"
-							/>
-						</div>`;
-
-							$(newList).appendTo('.listContainer');
+							$('.listContainer').append(
+								`
+									<div class="list" id="${list}">
+										<div class="listHeader">
+											<h2>${listName}</h2>
+										</div>
+										<ul class="cardContainer">
+										</ul>
+										<input
+											type="text"
+											class="newCard"
+											id="newCard"
+											name="newCard"
+											placeholder="Create new card"
+										/>
+									</div>
+								`
+							);
 
 							// Loop through they array of cards and insert in the DOM
 							if (listCards != undefined) {
@@ -272,17 +292,15 @@ $(document).ready(function() {
 										.then(function(doc) {
 											// Store card content from firebase
 											let cardContent = doc.data().content;
-											console.log(doc.data());
 
-											// Markup for new card
-											let newCard = `
-										<li class="card" id=${card}>
-											<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
-											<p>${cardContent}</p>
-										</li>`;
-
-											// Add new card markup with dynamic list name
-											$(newCard).appendTo(`#${list} .cardContainer`);
+											$(`#${list} .cardContainer`).append(
+												`
+													<li class="card" id=${card}>
+														<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
+														<p>${cardContent}</p>
+													</li>
+												`
+											);
 										})
 										.catch(function(error) {
 											console.log('Error getting documents: ', error);
