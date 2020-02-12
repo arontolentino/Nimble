@@ -317,3 +317,49 @@ main {
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 }
+
+.logo {
+	margin-bottom: 2rem;
+}
+
+.logo h1 {
+	font-size: 1.6rem;
+
+	text-transform: uppercase;
+}
+
+nav h2 {
+	font-size: 1.2rem;
+	color: #878787;
+	text-transform: uppercase;
+	margin-bottom: 1rem;
+}
+
+nav ul {
+	list-style: none;
+	margin-bottom: 2rem;
+	position: relative;
+}
+
+nav li {
+	font-size: 1.4rem;
+	font-weight: 500;
+	padding: 1rem 0;
+	transition: all 0.2s;
+}
+
+nav li:hover {
+	background-color: #ffc200;
+	color: ;
+}
+
+nav a {
+	margin: 1rem 1rem;
+	text-decoration: none;
+}
+
+nav a:visited,
+nav a:link,
+nav a:focus {
+	color: #fff;
+}
