@@ -23,7 +23,7 @@ $(document).ready(function() {
 	///======================///
 
 	const home = function() {
-		projectInit();
+		initProject('vFh5srQztWPjM5nypUEW');
 	};
 
 	const login = function() {
@@ -124,12 +124,21 @@ $(document).ready(function() {
 	// PROJECT
 	///======================///
 
-	function initProject() {
-		$('main').empty();
-		$('main').append('<h1>You can login here</h1>');
+	function initProject(projectID) {
+		$('.main').empty();
+		// $('.main').append(
+		// 	`
+		// 		<div class="projectDetails">
+		// 			<h1>Project Lorem</h1>
+		// 		</div>
+		// 		<div class="board">
+		// 			<div class="listContainer" id="vFh5srQztWPjM5nypUEW">
+		// 			</div>
+		// 		</div>
+		// 	`
+		// );
+		loadProject(projectID);
 	}
-
-	loadProject();
 
 	// Event listener for creating new cards
 	$('.board').on('keyup', '#newCard', function(e) {
@@ -148,12 +157,110 @@ $(document).ready(function() {
 
 	// Event listener for deleting cards
 	$('.board').on('click', '.deleteCard', function(e) {
+		e.preventDefault();
 		const cardID = $(this)
 			.parent()
 			.attr('id');
 
 		deleteCard(this, cardID);
 	});
+
+	// Event listener for loading projects from the side bar
+	$('.projectLink').on('click', function(e) {
+		e.preventDefault();
+		console.log($(this).data('id'));
+
+		initProject($(this).data('id'));
+	});
+
+	// Load all lists and cards + display them in the DOM
+	function loadProject(projectId) {
+		console.log('Load project initiated');
+		db.collection('boards')
+			.doc(projectId)
+			.get()
+			.then(function(res) {
+				// Loop through they array of lists and insert in the DOM
+
+				$('.main').append(
+					`
+						<div class="projectDetails">
+							<h1>${res.data().name}</h1>
+						</div>
+						<div class="board">
+							<div class="listContainer" id="vFh5srQztWPjM5nypUEW">
+							</div>
+						</div>
+					`
+				);
+
+				for (const list of res.data().lists) {
+					console.log(list);
+					db.collection('lists')
+						.doc(`${list}`)
+						.get()
+						.then(function(res) {
+							console.log(res.data());
+							const listName = res.data().name;
+							const listCards = res.data().cards;
+
+							$('.listContainer').append(
+								`
+									<div class="list" id="${list}">
+										<div class="listHeader">
+											<h2>${listName}</h2>
+										</div>
+										<ul class="cardContainer">
+										</ul>
+										<input
+											type="text"
+											class="newCard"
+											id="newCard"
+											name="newCard"
+											placeholder="Create new card"
+										/>
+									</div>
+								`
+							);
+
+							// Loop through they array of cards and insert in the DOM
+							if (listCards != undefined) {
+								// Loop through all cards under a specific list and get more information from firebase
+								for (const card of listCards) {
+									db.collection('cards')
+										.doc(card)
+										.get()
+										.then(function(doc) {
+											// Store card content from firebase
+											console.log(doc.data());
+											let cardContent = doc.data().content;
+
+											$(`#${list} .cardContainer`).append(
+												`
+													<li class="card" id=${card}>
+														<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
+														<p>${cardContent}</p>
+													</li>
+												`
+											);
+										})
+										.catch(function(error) {
+											console.log('Error getting documents: ', error);
+										});
+								}
+							}
+							createSortableCards();
+						})
+						.catch(function(error) {
+							console.log('Error getting documents: ', error);
+						});
+					createSortableList();
+				}
+			})
+			.catch(function(error) {
+				console.log('Error getting documents: ', error);
+			});
+	}
 
 	// Create new card
 	function createCard(content, listID) {
@@ -251,78 +358,6 @@ $(document).ready(function() {
 					});
 			}
 		});
-	}
-
-	// Load all lists and cards + display them in the DOM
-	function loadProject() {
-		db.collection('boards')
-			.doc('vFh5srQztWPjM5nypUEW')
-			.get()
-			.then(function(res) {
-				// Loop through they array of lists and insert in the DOM
-				for (const list of res.data().lists) {
-					db.collection('lists')
-						.doc(`${list}`)
-						.get()
-						.then(function(res) {
-							const listName = res.data().name;
-							const listCards = res.data().cards;
-
-							$('.listContainer').append(
-								`
-									<div class="list" id="${list}">
-										<div class="listHeader">
-											<h2>${listName}</h2>
-										</div>
-										<ul class="cardContainer">
-										</ul>
-										<input
-											type="text"
-											class="newCard"
-											id="newCard"
-											name="newCard"
-											placeholder="Create new card"
-										/>
-									</div>
-								`
-							);
-
-							// Loop through they array of cards and insert in the DOM
-							if (listCards != undefined) {
-								// Loop through all cards under a specific list and get more information from firebase
-								for (const card of listCards) {
-									db.collection('cards')
-										.doc(card)
-										.get()
-										.then(function(doc) {
-											// Store card content from firebase
-											let cardContent = doc.data().content;
-
-											$(`#${list} .cardContainer`).append(
-												`
-													<li class="card" id=${card}>
-														<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
-														<p>${cardContent}</p>
-													</li>
-												`
-											);
-										})
-										.catch(function(error) {
-											console.log('Error getting documents: ', error);
-										});
-								}
-							}
-							createSortableCards();
-						})
-						.catch(function(error) {
-							console.log('Error getting documents: ', error);
-						});
-					createSortableList();
-				}
-			})
-			.catch(function(error) {
-				console.log('Error getting documents: ', error);
-			});
 	}
 
 	function deleteCard(itemObj, cardID) {

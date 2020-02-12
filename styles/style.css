@@ -193,8 +193,8 @@ h2 {
 }
 
 p {
-	font-size: 1.6rem;
-	font-weight: 500;
+	font-size: 1.4rem;
+	font-weight: 400;
 }
 
 input {
@@ -229,6 +229,7 @@ main {
 	overflow-x: scroll;
 	overflow-y: hidden;
 	width: calc(100vw - 300px);
+	padding-bottom: 2rem;
 }
 
 .projectDetails {
@@ -250,7 +251,7 @@ main {
 
 .cardContainer {
 	background: #f4f4f4;
-	border-radius: 10px;
+	border-radius: 5px;
 	/* padding: 1.4rem 1.3rem; */
 	width: 316px;
 	margin-bottom: 2rem;
@@ -261,9 +262,9 @@ main {
 .card {
 	background: #fff;
 	border-radius: 10px;
-	padding: 3rem 4rem;
-	font-size: 1.05rem;
-	font-weight: 700;
+	padding: 2rem 1.75rem;
+	font-size: 1rem;
+	font-weight: 500;
 	list-style: none;
 	position: relative;
 	margin: 1.4rem 1.3rem;
@@ -275,8 +276,8 @@ main {
 
 .card .deleteCard {
 	position: absolute;
-	right: 20px;
-	top: 15px;
+	right: 13px;
+	top: 7px;
 }
 
 .deleteCard:visited,
@@ -315,7 +316,7 @@ main {
 	font-size: 1.2rem;
 	width: 100%;
 	border: 1px solid lightgrey;
-	border-radius: 10px;
+	border-radius: 5px;
 }
 
 .logo {
@@ -362,4 +363,8 @@ nav a:visited,
 nav a:link,
 nav a:focus {
 	color: #fff;
+}
+
+.active {
+	background-color: #313131;
 }
