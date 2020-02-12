@@ -22,6 +22,10 @@ $(document).ready(function() {
 	// ROUTING
 	///======================///
 
+	const home = function() {
+		projectInit();
+	};
+
 	const login = function() {
 		initLogIn();
 	};
@@ -36,6 +40,7 @@ $(document).ready(function() {
 	};
 
 	const routes = {
+		'/': home,
 		'/login': login,
 		'/register': register,
 		'/dashboard/': dashboard,
@@ -352,9 +357,9 @@ $(document).ready(function() {
 	}
 
 	function projectInit() {
-		$('main').empty();
+		$('.main').empty();
 
-		$('main').append(
+		$('.main').append(
 			`
 				<div class="projectDetails">
 					<h1>Project Lorem</h1>

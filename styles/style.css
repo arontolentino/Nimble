@@ -184,10 +184,6 @@ html {
 	font-family: 'Heebo', sans-serif;
 }
 
-main {
-	padding: 2rem 2rem;
-}
-
 h1 {
 	font-size: 3.2rem;
 }
@@ -205,8 +201,34 @@ input {
 	padding-left: 1rem;
 }
 
+main {
+	/* height: 100vh; */
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+.twoColumn {
+	display: flex;
+	height: 100vh;
+}
+
+.sideBar {
+	flex: 0 0 270px;
+	padding: 3rem 0 0 3rem;
+	background-color: #000;
+	color: #fff;
+	height: 100%;
+}
+
+.main {
+	padding: 3rem 0 0 3rem;
+}
+
 .board {
 	display: flex;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	width: calc(100vw - 300px);
 }
 
 .projectDetails {
@@ -219,6 +241,7 @@ input {
 
 .list {
 	margin-right: 2.6rem;
+	height: 100%;
 }
 
 .listHeader {
@@ -228,9 +251,11 @@ input {
 .cardContainer {
 	background: #f4f4f4;
 	border-radius: 10px;
-	padding: 1.4rem 1.3rem;
+	/* padding: 1.4rem 1.3rem; */
 	width: 316px;
 	margin-bottom: 2rem;
+	overflow-y: auto;
+	height: calc(100vh - 24rem);
 }
 
 .card {
@@ -241,11 +266,12 @@ input {
 	font-weight: 700;
 	list-style: none;
 	position: relative;
+	margin: 1.4rem 1.3rem;
 }
 
-.card:not(:last-child) {
+/* .card:not(:last-child) {
 	margin-bottom: 1rem;
-}
+} */
 
 .card .deleteCard {
 	position: absolute;
