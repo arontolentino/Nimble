@@ -19,12 +19,10 @@ const db = firebase.firestore();
 
 $(document).ready(function() {
 	///======================///
-	// ROUTING
+	// ROUTING (DIRECTOR LIBRARY)
 	///======================///
 
-	const home = function() {
-		initProject('vFh5srQztWPjM5nypUEW');
-	};
+	const home = function() {};
 
 	const login = function() {
 		initLogIn();
@@ -35,8 +33,8 @@ $(document).ready(function() {
 	const dashboard = function() {
 		initDashboard();
 	};
-	const project = function(id) {
-		initProject();
+	const project = function(projectID) {
+		initProject(projectID);
 	};
 
 	const routes = {
@@ -49,7 +47,7 @@ $(document).ready(function() {
 
 	const router = Router(routes);
 
-	router.init('/');
+	router.init('/project/vFh5srQztWPjM5nypUEW');
 
 	///======================///
 	// Log In
@@ -126,18 +124,43 @@ $(document).ready(function() {
 
 	function initProject(projectID) {
 		$('.main').empty();
-		// $('.main').append(
-		// 	`
-		// 		<div class="projectDetails">
-		// 			<h1>Project Lorem</h1>
-		// 		</div>
-		// 		<div class="board">
-		// 			<div class="listContainer" id="vFh5srQztWPjM5nypUEW">
-		// 			</div>
-		// 		</div>
-		// 	`
-		// );
 		loadProject(projectID);
+		getProjectList('fEmkXIHnhMVeG6bbJFqu');
+	}
+
+	function getProjectList(userID) {
+		$('.projectNav').empty();
+
+		db.collection('users')
+			.doc(userID)
+			.get()
+			.then(function(doc) {
+				const projectList = doc.data().boards;
+
+				for (const project of projectList) {
+					db.collection('boards')
+						.doc(project)
+						.get()
+						.then(function(doc) {
+							const projectName = doc.data().name;
+							$('.projectNav').append(
+								`
+									<li class="active">
+										<a href="#/project/${project}" class="projectLink">
+											${projectName}
+										</a>
+									</li>
+								`
+							);
+						})
+						.catch(function(error) {
+							console.log('Error getting documents: ', error);
+						});
+				}
+			})
+			.catch(function(error) {
+				console.log('Error getting document:', error);
+			});
 	}
 
 	// Event listener for creating new cards
@@ -167,17 +190,16 @@ $(document).ready(function() {
 		deleteCard(this, cardID);
 	});
 
-	// Event listener for loading projects from the side bar
-	$('.projectLink').on('click', function(e) {
-		e.preventDefault();
-		console.log($(this).data('id'));
+	// // Event listener for loading projects from the side bar
+	// $('.projectLink').on('click', function(e) {
+	// 	e.preventDefault();
+	// 	console.log($(this).data('id'));
 
-		initProject($(this).data('id'));
-	});
+	// 	initProject($(this).data('id'));
+	// });
 
 	// Load all lists and cards + display them in the DOM
 	function loadProject(projectId) {
-		console.log('Load project initiated');
 		db.collection('boards')
 			.doc(projectId)
 			.get()
@@ -197,12 +219,10 @@ $(document).ready(function() {
 				);
 
 				for (const list of res.data().lists) {
-					console.log(list);
 					db.collection('lists')
 						.doc(`${list}`)
 						.get()
 						.then(function(res) {
-							console.log(res.data());
 							const listName = res.data().name;
 							const listCards = res.data().cards;
 
@@ -234,14 +254,13 @@ $(document).ready(function() {
 										.get()
 										.then(function(doc) {
 											// Store card content from firebase
-											console.log(doc.data());
 											let cardContent = doc.data().content;
 
 											$(`#${list} .cardContainer`).append(
 												`
 													<li class="card" id=${card}>
 														<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
-														<p>${cardContent}</p>
+														<p class="cardContent">${cardContent}</p>
 													</li>
 												`
 											);
@@ -276,7 +295,7 @@ $(document).ready(function() {
 				let newCard = `
 										<li class="card" id=${docRef.id}>
 										<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
-											<p>${content}</p>
+											<p class="cardContent">${content}</p>
 										</li>`;
 
 				// Add new card markup with dynamic list name
@@ -302,6 +321,7 @@ $(document).ready(function() {
 	// Create sortable list
 	function createSortableList() {
 		$('.listContainer').sortable({
+			handle: '.listHeader',
 			stop(event, ui) {
 				var sortedIDs = $(`#${this.id}`).sortable('toArray');
 
@@ -322,6 +342,10 @@ $(document).ready(function() {
 	function createSortableCards() {
 		$('.cardContainer').sortable({
 			connectWith: '.cardContainer',
+			handle: '.cardContent',
+			// scroll: true,
+			// scrollSensitivity: 10,
+			// scrollSpeed: 10,
 			stop(event, ui) {
 				const parentID = $(this)
 					.parent()
@@ -391,21 +415,5 @@ $(document).ready(function() {
 			.catch(function(error) {
 				console.error('Error removing document: ', error);
 			});
-	}
-
-	function projectInit() {
-		$('.main').empty();
-
-		$('.main').append(
-			`
-				<div class="projectDetails">
-					<h1>Project Lorem</h1>
-				</div>
-				<div class="board">
-					<div class="listContainer" id="vFh5srQztWPjM5nypUEW">
-					</div>
-				</div>
-			`
-		);
 	}
 });
