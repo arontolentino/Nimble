@@ -28,18 +28,19 @@ $(document).ready(function() {
 	const register = function() {
 		console.log('Register for an account');
 	};
-	const projects = function() {
-		console.log('View all your projects');
+	const dashboard = function() {
+		console.log('All your projects');
 	};
 	const project = function(id) {
 		console.log('You are currently viewing project ' + id);
+		$('main').empty();
 	};
 
 	const routes = {
 		'/login': login,
 		'/register': register,
-		'/projects': projects,
-		'/projects/:id': project
+		'/dashboard/': dashboard,
+		'/project/:id': project
 	};
 
 	const router = Router(routes);
@@ -123,20 +124,18 @@ $(document).ready(function() {
 
 	// Event listener for deleting cards
 	$('.board').on('click', '.deleteCard', function(e) {
-		console.log(this);
-
 		const cardID = $(this)
 			.parent()
 			.attr('id');
 
-		deleteCard(cardID);
+		deleteCard(this, cardID);
 	});
 
 	// Create new card
 	function createCard(content, listID) {
 		db.collection('cards')
 			.add({
-				content: newCardContent
+				content: content
 			})
 			.then(function(docRef) {
 				console.log('Created new card!');
@@ -144,16 +143,16 @@ $(document).ready(function() {
 				let newCard = `
 										<li class="card" id=${docRef.id}>
 										<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
-											<p>${newCardContent}</p>
+											<p>${content}</p>
 										</li>`;
 
 				// Add new card markup with dynamic list name
-				$(newCard).appendTo(`#${parentID} .cardContainer`);
+				$(newCard).appendTo(`#${listID} .cardContainer`);
 
-				const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
+				const sortedIDs = $(`#${listID} .cardContainer`).sortable('toArray');
 
 				db.collection('lists')
-					.doc(parentID)
+					.doc(listID)
 					.update({ cards: sortedIDs })
 					.then(function() {
 						console.log('Updated list array!');
@@ -273,6 +272,7 @@ $(document).ready(function() {
 										.then(function(doc) {
 											// Store card content from firebase
 											let cardContent = doc.data().content;
+											console.log(doc.data());
 
 											// Markup for new card
 											let newCard = `
@@ -302,8 +302,11 @@ $(document).ready(function() {
 			});
 	}
 
-	function deleteCard(cardID) {
-		console.log(this);
+	function deleteCard(itemObj, cardID) {
+		const listID = $(itemObj)
+			.closest('.list')
+			.attr('id');
+
 		db.collection('cards')
 			.doc(cardID)
 			.delete()
@@ -311,9 +314,38 @@ $(document).ready(function() {
 				console.log('Document successfully deleted!');
 
 				$(`#${cardID}`).remove();
+
+				const sortedIDs = $(`#${listID} .cardContainer`).sortable('toArray');
+				console.log(sortedIDs);
+
+				db.collection('lists')
+					.doc(listID)
+					.update({ cards: sortedIDs })
+					.then(function() {
+						console.log('Document was deleted and updated the array');
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
 			})
 			.catch(function(error) {
 				console.error('Error removing document: ', error);
 			});
+	}
+
+	function projectInit() {
+		$('main').empty();
+
+		$('main').append(
+			`
+				<div class="projectDetails">
+					<h1>Project Lorem</h1>
+				</div>
+				<div class="board">
+					<div class="listContainer" id="vFh5srQztWPjM5nypUEW">
+					</div>
+				</div>
+			`
+		);
 	}
 });
