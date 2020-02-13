@@ -240,6 +240,7 @@ input {
 
 .listHeader {
 	margin-bottom: 2rem;
+	position: relative;
 }
 
 .cardContainer {
@@ -363,6 +364,23 @@ nav a:focus {
 
 #newList {
 	width: 272px;
+}
+
+.deleteList {
+	position: absolute;
+	right: 13px;
+	top: 10px;
+}
+
+.deleteList:visited,
+.deleteList:link,
+.deleteList:focus {
+	color: #c4c4c4;
+	transition: color 0.2s;
+}
+
+.deleteList:hover {
+	color: #cc0000;
 }
 
 @media only screen and (max-width: 425px) {

@@ -199,13 +199,17 @@ $(document).ready(function() {
 		deleteCard(this, cardID);
 	});
 
-	// Event listener for adding new list
-	$('main').on('click', '.addList', function(e) {
+	// Event listener for deleting lists
+
+	$('main').on('click', '.deleteList', function(e) {
 		e.preventDefault();
 
-		// createList(listName, projectID);
-	});
+		const listID = $(this)
+			.closest('.list')
+			.attr('id');
 
+		deleteList(listID);
+	});
 	// Load all lists and cards + display them in the DOM
 	function loadProject(projectID) {
 		db.collection('boards')
@@ -246,6 +250,7 @@ $(document).ready(function() {
 								`
 									<div class="list" id="${list}">
 										<div class="listHeader">
+											<a class="deleteList" href="#"><i class="fas fa-times"></i></a>
 											<h2>${listName}</h2>
 										</div>
 										<ul class="cardContainer">
@@ -470,6 +475,35 @@ $(document).ready(function() {
 				db.collection('lists')
 					.doc(listID)
 					.update({ cards: sortedIDs })
+					.then(function() {
+						console.log('Document was deleted and updated the array');
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
+			})
+			.catch(function(error) {
+				console.error('Error removing document: ', error);
+			});
+	}
+
+	function deleteList(listID) {
+		const projectID = $('.projectDetails').attr('id');
+
+		db.collection('list')
+			.doc(listID)
+			.delete()
+			.then(function() {
+				console.log('Document successfully deleted!');
+
+				$(`#${listID}`).remove();
+
+				const sortedIDs = $(`.listContainer`).sortable('toArray');
+				console.log(sortedIDs);
+
+				db.collection('boards')
+					.doc(projectID)
+					.update({ lists: sortedIDs })
 					.then(function() {
 						console.log('Document was deleted and updated the array');
 					})
