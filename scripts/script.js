@@ -126,6 +126,7 @@ $(document).ready(function() {
 		$('.main').empty();
 		loadProject(projectID);
 		getProjectList('fEmkXIHnhMVeG6bbJFqu');
+		$('.listContainer').sortable();
 	}
 
 	function getProjectList(userID) {
@@ -266,6 +267,8 @@ $(document).ready(function() {
 								`
 							);
 
+							$('.listContainer').sortable();
+
 							// Loop through they array of cards and insert in the DOM
 							if (listCards != undefined) {
 								// Loop through all cards under a specific list and get more information from firebase
@@ -301,6 +304,41 @@ $(document).ready(function() {
 			})
 			.catch(function(error) {
 				console.log('Error getting documents: ', error);
+			});
+	}
+
+	// Create new project
+	function createProject(content, listID) {
+		db.collection('cards')
+			.add({
+				content: content
+			})
+			.then(function(docRef) {
+				console.log('Created new card!');
+
+				let newCard = `
+										<li class="card" id=${docRef.id}>
+										<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
+											<p class="cardContent">${content}</p>
+										</li>`;
+
+				// Add new card markup with dynamic list name
+				$(newCard).appendTo(`#${listID} .cardContainer`);
+
+				const sortedIDs = $(`#${listID} .cardContainer`).sortable('toArray');
+
+				db.collection('lists')
+					.doc(listID)
+					.update({ cards: sortedIDs })
+					.then(function() {
+						console.log('Updated list array!');
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
+			})
+			.catch(function(error) {
+				console.error('Error writing document: ', error);
 			});
 	}
 
@@ -392,7 +430,8 @@ $(document).ready(function() {
 		$('.listContainer').sortable({
 			handle: '.listHeader',
 			stop(event, ui) {
-				var sortedIDs = $(`#${this.id}`).sortable('toArray');
+				var sortedIDs = $('.listContainer').sortable('toArray');
+
 				console.log(sortedIDs);
 
 				db.collection('boards')

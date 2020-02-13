@@ -230,6 +230,7 @@ input {
 .listContainer {
 	display: flex;
 	overflow-x: scroll;
+	height: calc(100vh - 14rem);
 }
 
 .list {
@@ -260,7 +261,7 @@ input {
 	font-weight: 500;
 	list-style: none;
 	position: relative;
-	margin: 2rem 2rem;
+	margin: 1rem 1rem;
 }
 
 /* .card:not(:last-child) {
@@ -364,6 +365,10 @@ nav a:focus {
 
 #newList {
 	width: 272px;
+}
+
+#newProject {
+	width: 200px;
 }
 
 .deleteList {
