@@ -190,6 +190,17 @@ $(document).ready(function() {
 		}
 	});
 
+	// Event listener for creating new project
+	$('main').on('keyup', '#newProject', function(e) {
+		if (event.key === 'Enter' || event.keyCode === '13') {
+			const projectName = $(this).val();
+
+			createProject(projectName, 'fEmkXIHnhMVeG6bbJFqu');
+
+			$(this).val('');
+		}
+	});
+
 	// Event listener for deleting cards
 	$('main').on('click', '.deleteCard', function(e) {
 		e.preventDefault();
@@ -222,7 +233,7 @@ $(document).ready(function() {
 				$('.main').append(
 					`
 						<div class="projectDetails" id="${projectID}">
-							<h1>${res.data().name}</h1>
+							<h1>Project: ${res.data().name}</h1>
 							<input
 							type="text"
 							class="newCard"
@@ -233,7 +244,7 @@ $(document).ready(function() {
 						</div>
 						<div class="board">
 							
-							<div class="listContainer" id="vFh5srQztWPjM5nypUEW">
+							<div class="listContainer" id="${projectID}">
 							</div>
 						</div>
 					`
@@ -308,30 +319,32 @@ $(document).ready(function() {
 	}
 
 	// Create new project
-	function createProject(content, listID) {
-		db.collection('cards')
+	function createProject(projectName, userID) {
+		db.collection('boards')
 			.add({
-				content: content
+				name: projectName
 			})
 			.then(function(docRef) {
-				console.log('Created new card!');
+				console.log('Created new project!');
 
-				let newCard = `
-										<li class="card" id=${docRef.id}>
-										<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
-											<p class="cardContent">${content}</p>
-										</li>`;
+				let newProject = `
+										<li class="active">
+											<a href="#/project/${docRef.id}" class="projectLink">
+												${projectName}
+											</a>
+										</li>
+										`;
 
 				// Add new card markup with dynamic list name
-				$(newCard).appendTo(`#${listID} .cardContainer`);
+				$(newProject).appendTo('.projectNav');
 
-				const sortedIDs = $(`#${listID} .cardContainer`).sortable('toArray');
-
-				db.collection('lists')
-					.doc(listID)
-					.update({ cards: sortedIDs })
+				db.collection('users')
+					.doc(userID)
+					.update({
+						boards: firebase.firestore.FieldValue.arrayUnion(docRef.id)
+					})
 					.then(function() {
-						console.log('Updated list array!');
+						console.log('Updated user boards array');
 					})
 					.catch(function(error) {
 						console.error('Error writing document: ', error);
@@ -359,6 +372,8 @@ $(document).ready(function() {
 
 				// Add new card markup with dynamic list name
 				$(newCard).appendTo(`#${listID} .cardContainer`);
+
+				createSortableCards();
 
 				const sortedIDs = $(`#${listID} .cardContainer`).sortable('toArray');
 
@@ -404,9 +419,11 @@ $(document).ready(function() {
 										`;
 
 				// Add new card markup with dynamic list name
-				$(newList).appendTo(`.listContainer`);
+				$(newList).appendTo('.listContainer');
 
-				const sortedIDs = $(`.listContainer`).sortable('toArray');
+				createSortableList();
+
+				const sortedIDs = $('.listContainer').sortable('toArray');
 				console.log(sortedIDs);
 
 				// Update list array in project document

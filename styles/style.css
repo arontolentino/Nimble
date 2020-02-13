@@ -220,7 +220,7 @@ input {
 
 .board {
 	display: flex;
-	width: calc(100vw - 300px);
+	width: calc(100vw - 330px);
 }
 
 .projectDetails {
@@ -368,7 +368,7 @@ nav a:focus {
 }
 
 #newProject {
-	width: 200px;
+	width: 210px;
 }
 
 .deleteList {
