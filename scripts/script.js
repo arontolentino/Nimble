@@ -53,7 +53,7 @@ $(document).ready(function() {
 
 	const router = Router(routes);
 
-	router.init('/project/vFh5srQztWPjM5nypUEW');
+	router.init('/login');
 
 	///======================///
 	// Start
@@ -88,7 +88,18 @@ $(document).ready(function() {
 		$('main').empty();
 
 		const loginHTML = `
-		
+			<div class="login">
+				<div class="formContainer">
+					<div class="form">
+						<form class="login-form">
+							<input type="text" placeholder="username"/>
+							<input type="password" placeholder="password"/>
+							<button>login</button>
+							<p class="message">Not registered? <a href="#/register">Create an account</a></p>
+						</form>
+					</div>
+				</div>
+			</div>
 		`;
 
 		$('main').append(loginHTML);
@@ -142,7 +153,24 @@ $(document).ready(function() {
 
 	function initRegister() {
 		$('main').empty();
-		$('main').append('<h1>You can register here</h1>');
+
+		const registerHTML = `
+			<div class="login">
+				<div class="formContainer">
+					<div class="form">
+						<form class="register-form">
+							<input type="text" placeholder="name"/>
+							<input type="password" placeholder="password"/>
+							<input type="text" placeholder="email address"/>
+							<button>create</button>
+							<p class="message">Already registered? <a href="#/login">Sign In</a></p>
+						</form>
+					</div>
+				</div>
+			</div>
+		`;
+
+		$('main').append(registerHTML);
 	}
 
 	///======================///
