@@ -19,10 +19,25 @@ const db = firebase.firestore();
 
 $(document).ready(function() {
 	///======================///
-	// FIREBASE USER ID
+	// Firebase Auth Listener
 	///======================///
 
-	const userID = '';
+	let userID = document.cookie.replace(
+		/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
+		'$1'
+	);
+
+	// signOut();
+
+	function signOut() {
+		document.cookie = 'uid=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+		console.log(
+			document.cookie.replace(
+				/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
+				'$1'
+			)
+		);
+	}
 
 	///======================///
 	// ROUTING (DIRECTOR LIBRARY)
@@ -49,11 +64,9 @@ $(document).ready(function() {
 	};
 
 	const routes = {
-		'/': home,
 		'/login': login,
 		'/register': register,
 		'/start': start,
-		'/dashboard/': dashboard,
 		'/project/:id': project
 	};
 
@@ -67,6 +80,10 @@ $(document).ready(function() {
 
 	function initStart() {
 		$('.main').empty();
+
+		getProjectList(userID);
+
+		// console.log(userID);
 
 		const startHTML = `
 			<div class="start">
@@ -133,6 +150,13 @@ $(document).ready(function() {
 			})
 			.then(function() {
 				console.log('You sucessfully logged in!');
+
+				var uid = firebase.auth().currentUser.uid;
+				document.cookie = `uid=${uid}`;
+				console.log(document.cookie);
+
+				window.location.assign(`#/start`);
+				location.reload();
 			})
 			.catch(function(error) {
 				// Handle Errors here.
@@ -143,13 +167,6 @@ $(document).ready(function() {
 			});
 	}
 
-	firebase.auth().onAuthStateChanged(function(user) {
-		if (user) {
-			console.log(userID);
-		} else {
-			// No user is signed in.
-		}
-	});
 	///======================///
 	// REGISTER
 	///======================///
@@ -162,8 +179,10 @@ $(document).ready(function() {
 				<div class="formContainer">
 					<div class="form">
 						<form class="register-form">
-							<input type="text" id="email" placeholder="email address"/>
-							<input type="password" id="password" placeholder="password"/>
+							<input type="text" id="firstName" placeholder="First Name"/>
+							<input type="text" id="lastName" placeholder="Last Name"/>
+							<input type="email" id="email" placeholder="Email Address"/>
+							<input type="password" id="password" placeholder="Password"/>
 							<button>create</button>
 							<p class="message">Already registered? <a href="#/login">Sign In</a></p>
 						</form>
@@ -176,21 +195,41 @@ $(document).ready(function() {
 	}
 
 	$('main').on('submit', '.register-form', function() {
-		const name = $('#name').val();
+		const firstName = $('#firstName').val();
+		const lastName = $('#firstName').val();
 		const email = $('#email').val();
 		const password = $('#password').val();
 
-		createUser(email, password);
+		createUser(firstName, lastName, email, password);
 	});
 
-	function createUser(email, password) {
+	function createUser(firstName, lastName, email, password) {
 		firebase
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
 			.then(function() {
 				console.log('You sucessfully registered!');
-				// window.location.assign(`#/project/vFh5srQztWPjM5nypUEW`);
-				// location.reload();
+
+				var uid = firebase.auth().currentUser.uid;
+				document.cookie = `uid=${uid}`;
+				console.log(document.cookie);
+
+				db.collection('users')
+					.doc(uid)
+					.set({
+						firstName: firstName,
+						lastName: lastName,
+						email: email
+					})
+					.then(function() {
+						console.log('Updated users projects array');
+
+						window.location.assign(`#/start`);
+						location.reload();
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
 			})
 			.catch(function(error) {
 				// Handle Errors here.
@@ -229,10 +268,10 @@ $(document).ready(function() {
 			.doc(userID)
 			.get()
 			.then(function(doc) {
-				const projectList = doc.data().boards;
+				const projectList = doc.data().projects;
 
 				for (const project of projectList) {
-					db.collection('boards')
+					db.collection('projects')
 						.doc(project)
 						.get()
 						.then(function(doc) {
@@ -288,7 +327,7 @@ $(document).ready(function() {
 		if (event.key === 'Enter' || event.keyCode === '13') {
 			const projectName = $(this).val();
 
-			createProject(projectName, 'fEmkXIHnhMVeG6bbJFqu');
+			createProject(projectName, userID);
 
 			$(this).val('');
 		}
@@ -317,7 +356,7 @@ $(document).ready(function() {
 	});
 	// Load all lists and cards + display them in the DOM
 	function loadProject(projectID) {
-		db.collection('boards')
+		db.collection('projects')
 			.doc(projectID)
 			.get()
 			.then(function(res) {
@@ -413,7 +452,7 @@ $(document).ready(function() {
 
 	// Create new project
 	function createProject(projectName, userID) {
-		db.collection('boards')
+		db.collection('projects')
 			.add({
 				name: projectName
 			})
@@ -436,10 +475,10 @@ $(document).ready(function() {
 				db.collection('users')
 					.doc(userID)
 					.update({
-						boards: firebase.firestore.FieldValue.arrayUnion(docRef.id)
+						projects: firebase.firestore.FieldValue.arrayUnion(docRef.id)
 					})
 					.then(function() {
-						console.log('Updated user boards array');
+						console.log('Updated user projects array');
 					})
 					.catch(function(error) {
 						console.error('Error writing document: ', error);
@@ -499,6 +538,7 @@ $(document).ready(function() {
 				let newList = `
 										<div class="list" id="${docRef.id}">
 										<div class="listHeader">
+											<a class="deleteList" href="#"><i class="fas fa-times"></i></a>
 											<h2>${name}</h2>
 										</div>
 										<ul class="cardContainer">
@@ -522,7 +562,7 @@ $(document).ready(function() {
 				console.log(sortedIDs);
 
 				// Update list array in project document
-				db.collection('boards')
+				db.collection('projects')
 					.doc(projectID)
 					.update({ lists: sortedIDs })
 					.then(function() {
@@ -546,7 +586,7 @@ $(document).ready(function() {
 
 				console.log(sortedIDs);
 
-				db.collection('boards')
+				db.collection('projects')
 					.doc(this.id)
 					.update({ lists: sortedIDs })
 					.then(function() {
@@ -652,7 +692,7 @@ $(document).ready(function() {
 				const sortedIDs = $(`.listContainer`).sortable('toArray');
 				console.log(sortedIDs);
 
-				db.collection('boards')
+				db.collection('projects')
 					.doc(projectID)
 					.update({ lists: sortedIDs })
 					.then(function() {
