@@ -30,6 +30,11 @@ $(document).ready(function() {
 	const register = function() {
 		initRegister();
 	};
+
+	const start = function() {
+		initStart();
+	};
+
 	const dashboard = function() {
 		initDashboard();
 	};
@@ -41,6 +46,7 @@ $(document).ready(function() {
 		'/': home,
 		'/login': login,
 		'/register': register,
+		'/start': start,
 		'/dashboard/': dashboard,
 		'/project/:id': project
 	};
@@ -50,12 +56,42 @@ $(document).ready(function() {
 	router.init('/project/vFh5srQztWPjM5nypUEW');
 
 	///======================///
+	// Start
+	///======================///
+
+	function initStart() {
+		$('.main').empty();
+
+		const startHTML = `
+			<div class="start">
+				<div class="createProject">
+					<h2>It looks like you haven't made a project just yet. Shall we create one?</h2>
+					<button class="btn projectBtnFocus">Add Project</button>
+				</div>
+			</div>
+		`;
+
+		$('.main').append(startHTML);
+	}
+
+	$('main').on('click', '.projectBtnFocus', function(e) {
+		e.preventDefault();
+		console.log('Clicked!');
+		$('#newProject').focus();
+	});
+
+	///======================///
 	// Log In
 	///======================///
 
 	function initLogIn() {
 		$('main').empty();
-		$('main').append('<h1>You can login here</h1>');
+
+		const loginHTML = `
+		
+		`;
+
+		$('main').append(loginHTML);
 	}
 
 	function logInUser(email, password) {
@@ -338,6 +374,8 @@ $(document).ready(function() {
 				// Add new card markup with dynamic list name
 				$(newProject).appendTo('.projectNav');
 
+				window.location.replace(`#/project/${docRef.id}`);
+
 				db.collection('users')
 					.doc(userID)
 					.update({
@@ -571,4 +609,6 @@ $(document).ready(function() {
 				console.error('Error removing document: ', error);
 			});
 	}
+
+	// Delete project
 });
