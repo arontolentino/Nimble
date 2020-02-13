@@ -29,14 +29,29 @@ $(document).ready(function() {
 
 	// signOut();
 
+	$('main').on('click', '.signOut', function() {
+		signOut();
+	});
+
 	function signOut() {
-		document.cookie = 'uid=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-		console.log(
-			document.cookie.replace(
-				/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
-				'$1'
-			)
-		);
+		firebase
+			.auth()
+			.signOut()
+			.then(function() {
+				// Sign-out successful.
+				document.cookie = 'uid=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+				console.log(
+					document.cookie.replace(
+						/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
+						'$1'
+					)
+				);
+
+				window.location.assign(`#/login`);
+			})
+			.catch(function(error) {
+				// An error happened.
+			});
 	}
 
 	///======================///
@@ -53,6 +68,7 @@ $(document).ready(function() {
 	};
 
 	const start = function() {
+		initTwoColumn();
 		initStart();
 	};
 
@@ -60,6 +76,7 @@ $(document).ready(function() {
 		initDashboard();
 	};
 	const project = function(projectID) {
+		initTwoColumn();
 		initProject(projectID);
 	};
 
@@ -75,11 +92,46 @@ $(document).ready(function() {
 	router.init('/login');
 
 	///======================///
+	// Two Column
+	///======================///
+
+	function initTwoColumn() {
+		$('main').empty();
+
+		const twoColumn = `
+			<div class="twoColumn">
+				<div class="sideBar">
+					<div class="logo">
+						<h1>Nimble</h1>
+					</div>
+					<nav>
+						<h2>Projects</h2>
+						<ul class="projectNav"></ul>
+						<input
+							type="text"
+							class="newCard"
+							id="newProject"
+							name="newProject"
+							placeholder="Add new project"
+						/>
+						<button class="btn signOut">Sign Out</button>
+					</nav>
+				</div>
+				<div class="main"></div>
+			</div>
+		`;
+
+		$('main').append(twoColumn);
+	}
+
+	///======================///
 	// Start
 	///======================///
 
 	function initStart() {
 		$('.main').empty();
+
+		console.log(userID);
 
 		getProjectList(userID);
 
@@ -255,6 +307,7 @@ $(document).ready(function() {
 	///======================///
 
 	function initProject(projectID) {
+		console.log(projectID);
 		$('.main').empty();
 		loadProject(projectID);
 		getProjectList(userID);
@@ -356,11 +409,14 @@ $(document).ready(function() {
 	});
 	// Load all lists and cards + display them in the DOM
 	function loadProject(projectID) {
+		console.log(projectID);
+
 		db.collection('projects')
 			.doc(projectID)
 			.get()
 			.then(function(res) {
 				// Loop through they array of lists and insert in the DOM
+				console.log(res.data());
 
 				$('.main').append(
 					`
@@ -381,68 +437,69 @@ $(document).ready(function() {
 						</div>
 					`
 				);
+				if (res.data().lists != undefined) {
+					for (const list of res.data().lists) {
+						db.collection('lists')
+							.doc(`${list}`)
+							.get()
+							.then(function(res) {
+								const listName = res.data().name;
+								const listCards = res.data().cards;
 
-				for (const list of res.data().lists) {
-					db.collection('lists')
-						.doc(`${list}`)
-						.get()
-						.then(function(res) {
-							const listName = res.data().name;
-							const listCards = res.data().cards;
-
-							$('.listContainer').append(
-								`
-									<div class="list" id="${list}">
-										<div class="listHeader">
-											<a class="deleteList" href="#"><i class="fas fa-times"></i></a>
-											<h2>${listName}</h2>
+								$('.listContainer').append(
+									`
+										<div class="list" id="${list}">
+											<div class="listHeader">
+												<a class="deleteList" href="#"><i class="fas fa-times"></i></a>
+												<h2>${listName}</h2>
+											</div>
+											<ul class="cardContainer">
+											</ul>
+											<input
+												type="text"
+												class="newCard"
+												id="newCard"
+												name="newCard"
+												placeholder="Create new card"
+											/>
 										</div>
-										<ul class="cardContainer">
-										</ul>
-										<input
-											type="text"
-											class="newCard"
-											id="newCard"
-											name="newCard"
-											placeholder="Create new card"
-										/>
-									</div>
-								`
-							);
+									`
+								);
 
-							$('.listContainer').sortable();
+								$('.listContainer').sortable();
 
-							// Loop through they array of cards and insert in the DOM
-							if (listCards != undefined) {
-								// Loop through all cards under a specific list and get more information from firebase
-								for (const card of listCards) {
-									db.collection('cards')
-										.doc(card)
-										.get()
-										.then(function(doc) {
-											// Store card content from firebase
-											let cardContent = doc.data().content;
+								// Loop through they array of cards and insert in the DOM
+								if (listCards != undefined) {
+									// Loop through all cards under a specific list and get more information from firebase
+									for (const card of listCards) {
+										db.collection('cards')
+											.doc(card)
+											.get()
+											.then(function(doc) {
+												// Store card content from firebase
+												let cardContent = doc.data().content;
 
-											$(`#${list} .cardContainer`).append(
-												`
-													<li class="card" id=${card}>
-														<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
-														<p class="cardContent">${cardContent}</p>
-													</li>
-												`
-											);
-										})
-										.catch(function(error) {
-											console.log('Error getting documents: ', error);
-										});
+												$(`#${list} .cardContainer`).append(
+													`
+														<li class="card" id=${card}>
+															<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
+															<p class="cardContent">${cardContent}</p>
+														</li>
+													`
+												);
+											})
+											.catch(function(error) {
+												console.log('Error getting documents: ', error);
+											});
+									}
 								}
-							}
-							createSortableCards();
-						})
-						.catch(function(error) {
-							console.log('Error getting documents: ', error);
-						});
-					createSortableList();
+								createSortableCards();
+							})
+							.catch(function(error) {
+								console.log('Error getting documents: ', error);
+							});
+						createSortableList();
+					}
 				}
 			})
 			.catch(function(error) {
@@ -557,6 +614,7 @@ $(document).ready(function() {
 				$(newList).appendTo('.listContainer');
 
 				createSortableList();
+				createSortableCards();
 
 				const sortedIDs = $('.listContainer').sortable('toArray');
 				console.log(sortedIDs);
