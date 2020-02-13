@@ -19,6 +19,12 @@ const db = firebase.firestore();
 
 $(document).ready(function() {
 	///======================///
+	// FIREBASE USER ID
+	///======================///
+
+	const userID = '';
+
+	///======================///
 	// ROUTING (DIRECTOR LIBRARY)
 	///======================///
 
@@ -92,8 +98,8 @@ $(document).ready(function() {
 				<div class="formContainer">
 					<div class="form">
 						<form class="login-form">
-							<input type="text" placeholder="username"/>
-							<input type="password" placeholder="password"/>
+							<input type="email" id="email" placeholder="email"/>
+							<input type="password" id="password" placeholder="password"/>
 							<button>login</button>
 							<p class="message">Not registered? <a href="#/register">Create an account</a></p>
 						</form>
@@ -104,6 +110,14 @@ $(document).ready(function() {
 
 		$('main').append(loginHTML);
 	}
+
+	$('main').on('submit', '.login-form', function() {
+		const name = $('#name').val();
+		const email = $('#email').val();
+		const password = $('#password').val();
+
+		logInUser(email, password);
+	});
 
 	function logInUser(email, password) {
 		firebase
@@ -117,6 +131,9 @@ $(document).ready(function() {
 				// New sign-in will be persisted with session persistence.
 				return firebase.auth().signInWithEmailAndPassword(email, password);
 			})
+			.then(function() {
+				console.log('You sucessfully logged in!');
+			})
 			.catch(function(error) {
 				// Handle Errors here.
 				const errorCode = error.code;
@@ -126,23 +143,9 @@ $(document).ready(function() {
 			});
 	}
 
-	function createUser(email, password) {
-		firebase
-			.auth()
-			.createUserWithEmailAndPassword(email, password)
-			.catch(function(error) {
-				// Handle Errors here.
-				const errorCode = error.code;
-				const errorMessage = error.message;
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
-				// ...
-			});
-	}
-
 	firebase.auth().onAuthStateChanged(function(user) {
 		if (user) {
-			// User is signed in.
+			console.log(userID);
 		} else {
 			// No user is signed in.
 		}
@@ -159,9 +162,8 @@ $(document).ready(function() {
 				<div class="formContainer">
 					<div class="form">
 						<form class="register-form">
-							<input type="text" placeholder="name"/>
-							<input type="password" placeholder="password"/>
-							<input type="text" placeholder="email address"/>
+							<input type="text" id="email" placeholder="email address"/>
+							<input type="password" id="password" placeholder="password"/>
 							<button>create</button>
 							<p class="message">Already registered? <a href="#/login">Sign In</a></p>
 						</form>
@@ -171,6 +173,33 @@ $(document).ready(function() {
 		`;
 
 		$('main').append(registerHTML);
+	}
+
+	$('main').on('submit', '.register-form', function() {
+		const name = $('#name').val();
+		const email = $('#email').val();
+		const password = $('#password').val();
+
+		createUser(email, password);
+	});
+
+	function createUser(email, password) {
+		firebase
+			.auth()
+			.createUserWithEmailAndPassword(email, password)
+			.then(function() {
+				console.log('You sucessfully registered!');
+				// window.location.assign(`#/project/vFh5srQztWPjM5nypUEW`);
+				// location.reload();
+			})
+			.catch(function(error) {
+				// Handle Errors here.
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
+				// ...
+			});
 	}
 
 	///======================///
@@ -189,7 +218,7 @@ $(document).ready(function() {
 	function initProject(projectID) {
 		$('.main').empty();
 		loadProject(projectID);
-		getProjectList('fEmkXIHnhMVeG6bbJFqu');
+		getProjectList(userID);
 		$('.listContainer').sortable();
 	}
 
