@@ -221,7 +221,6 @@ input {
 .board {
 	display: flex;
 	width: calc(100vw - 300px);
-	padding-bottom: 2rem;
 }
 
 .projectDetails {
@@ -249,7 +248,7 @@ input {
 	width: 272px;
 	margin-bottom: 2rem;
 	overflow-y: scroll;
-	height: calc(100vh - 24rem);
+	max-height: calc(100vh - 30rem);
 }
 
 .card {
@@ -360,6 +359,10 @@ nav a:focus {
 
 .active {
 	background-color: #313131;
+}
+
+#newList {
+	width: 272px;
 }
 
 @media only screen and (max-width: 425px) {

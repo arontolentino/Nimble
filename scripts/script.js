@@ -163,15 +163,24 @@ $(document).ready(function() {
 			});
 	}
 
+	// Event listener for creating new list
+	$('main').on('keyup', '#newList', function(e) {
+		if (event.key === 'Enter' || event.keyCode === '13') {
+			const projectID = $('.projectDetails').attr('id');
+			const listName = $(this).val();
+
+			createList(listName, projectID);
+
+			$(this).val('');
+		}
+	});
+
 	// Event listener for creating new cards
 	$('main').on('keyup', '#newCard', function(e) {
 		if (event.key === 'Enter' || event.keyCode === '13') {
 			const parentID = $(this)
 				.parent()
 				.attr('id');
-
-			console.log(parentID);
-
 			const newCardContent = $(this).val();
 
 			createCard(newCardContent, parentID);
@@ -190,28 +199,35 @@ $(document).ready(function() {
 		deleteCard(this, cardID);
 	});
 
-	// // Event listener for loading projects from the side bar
-	// $('.projectLink').on('click', function(e) {
-	// 	e.preventDefault();
-	// 	console.log($(this).data('id'));
+	// Event listener for adding new list
+	$('main').on('click', '.addList', function(e) {
+		e.preventDefault();
 
-	// 	initProject($(this).data('id'));
-	// });
+		// createList(listName, projectID);
+	});
 
 	// Load all lists and cards + display them in the DOM
-	function loadProject(projectId) {
+	function loadProject(projectID) {
 		db.collection('boards')
-			.doc(projectId)
+			.doc(projectID)
 			.get()
 			.then(function(res) {
 				// Loop through they array of lists and insert in the DOM
 
 				$('.main').append(
 					`
-						<div class="projectDetails">
+						<div class="projectDetails" id="${projectID}">
 							<h1>${res.data().name}</h1>
+							<input
+							type="text"
+							class="newCard"
+							id="newList"
+							name="newCard"
+							placeholder="Add new list"
+						/>
 						</div>
 						<div class="board">
+							
 							<div class="listContainer" id="vFh5srQztWPjM5nypUEW">
 							</div>
 						</div>
@@ -318,12 +334,61 @@ $(document).ready(function() {
 			});
 	}
 
+	// Create new list
+	function createList(name, projectID) {
+		db.collection('lists')
+			.add({
+				name: name
+			})
+			.then(function(docRef) {
+				console.log('Created new list!');
+
+				let newList = `
+										<div class="list" id="${docRef.id}">
+										<div class="listHeader">
+											<h2>${name}</h2>
+										</div>
+										<ul class="cardContainer">
+										</ul>
+										<input
+											type="text"
+											class="newCard"
+											id="newCard"
+											name="newCard"
+											placeholder="Create new card"
+										/>
+									</div>
+										`;
+
+				// Add new card markup with dynamic list name
+				$(newList).appendTo(`.listContainer`);
+
+				const sortedIDs = $(`.listContainer`).sortable('toArray');
+				console.log(sortedIDs);
+
+				// Update list array in project document
+				db.collection('boards')
+					.doc(projectID)
+					.update({ lists: sortedIDs })
+					.then(function() {
+						console.log('Updated list array!');
+					})
+					.catch(function(error) {
+						console.error('Error writing document: ', error);
+					});
+			})
+			.catch(function(error) {
+				console.error('Error writing document: ', error);
+			});
+	}
+
 	// Create sortable list
 	function createSortableList() {
 		$('.listContainer').sortable({
 			handle: '.listHeader',
 			stop(event, ui) {
 				var sortedIDs = $(`#${this.id}`).sortable('toArray');
+				console.log(sortedIDs);
 
 				db.collection('boards')
 					.doc(this.id)
