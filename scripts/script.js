@@ -221,6 +221,10 @@ $(document).ready(function() {
 			<div class="login">
 				<div class="formContainer">
 					<div class="form">
+						<div class="formLogo">
+							<img src="/images/blue-nimble-logo.png" alt="Nimble logo">
+							<h1>Nimble</h1>
+						</div>
 						<form class="login-form">
 							<input type="email" id="email" placeholder="email"/>
 							<input type="password" id="password" placeholder="password"/>
@@ -258,7 +262,11 @@ $(document).ready(function() {
 			.then(function() {
 				var uid = firebase.auth().currentUser.uid;
 				document.cookie = `uid=${uid}`;
-				console.log(document.cookie);
+
+				let userID = document.cookie.replace(
+					/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
+					'$1'
+				);
 
 				checkProjectsExist(userID);
 			})
@@ -284,6 +292,10 @@ $(document).ready(function() {
 			<div class="login">
 				<div class="formContainer">
 					<div class="form">
+						<div class="formLogo">
+							<img src="/images/blue-nimble-logo.png" alt="Nimble logo">
+							<h1>Nimble</h1>
+						</div>	
 						<form class="register-form">
 							<input type="text" id="firstName" placeholder="First Name"/>
 							<input type="text" id="lastName" placeholder="Last Name"/>
