@@ -337,6 +337,7 @@ input:focus {
 	flex-direction: column;
 	align-items: ;
 	justify-content: space-between;
+	position: relative;
 }
 
 .main {
@@ -352,6 +353,7 @@ input:focus {
 	background: #fff;
 	padding: 2rem 1.5rem 2rem 4rem;
 	box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
+	position: relative;
 }
 
 .projectDetails h1 {
@@ -592,4 +594,29 @@ nav a:focus {
 	color: #fff;
 	border-radius: 5px;
 	box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.toggle {
+	font-size: 1.5rem;
+	background: #ffa700;
+	padding: 10px;
+	border-radius: 50%;
+	position: absolute;
+	top: 150px;
+	left: -17px;
+	color: #fff;
+}
+
+.toggle:hover {
+	background: #ffa700;
+}
+
+@media only screen and (max-width: 600px) {
+	.listContainer {
+		width: 100vw;
+	}
+
+	.sideBar {
+		display: none;
+	}
 }

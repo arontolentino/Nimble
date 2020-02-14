@@ -335,6 +335,10 @@ $(document).ready(function() {
 
 		loadProject(projectID);
 		getProjectList(userID);
+
+		$('main').on('click', '.toggle', function() {
+			$('.sideBar').toggle();
+		});
 	}
 
 	///================================///
@@ -421,6 +425,7 @@ $(document).ready(function() {
 					`
 						<div id="project">
 							<div class="projectDetails" id="${projectID}">
+								<i class="fas fa-arrows-alt-h toggle"></i>
 								<h1>Project: ${res.data().name}</h1>
 								<input
 									type="text"
