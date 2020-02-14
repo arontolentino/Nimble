@@ -358,9 +358,9 @@ a:focus {
 .listContainer {
 	display: flex;
 	overflow-x: scroll;
-	height: calc(100vh - 13rem);
+	height: calc(100vh - 14rem);
 	width: calc(100vw - 250px);
-	padding-bottom: 3rem;
+	padding-bottom: 1.5rem;
 }
 
 .list {
@@ -452,6 +452,13 @@ a:focus {
 
 .logo {
 	margin-bottom: 2rem;
+	display: flex;
+}
+
+.logo img {
+	width: 10%;
+	margin-right: 1rem;
+	height: auto;
 }
 
 .logo h1 {
@@ -462,7 +469,7 @@ a:focus {
 
 nav h2 {
 	font-size: 1.2rem;
-	color: #878787;
+	color: #f0f0f0;
 	text-transform: uppercase;
 	margin-bottom: 1rem;
 }
@@ -471,6 +478,8 @@ nav ul {
 	list-style: none;
 	margin-bottom: 2rem;
 	position: relative;
+	max-height: 40rem;
+	overflow-y: auto;
 }
 
 nav li {
@@ -601,15 +610,16 @@ input:focus {
 	position: absolute;
 	text-align: center;
 	margin: 0 auto;
-	top: 0;
+	top: 10px;
 	max-width: 700px;
 	padding: 1rem 5rem;
-	margin-left: auto;
-	margin-right: auto;
+	margin: 0 auto;
 	left: 0;
 	right: 0;
-	background-color: red;
+	background-color: firebrick;
 	color: #fff;
+	border-radius: 5px;
+	box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 ///======================///

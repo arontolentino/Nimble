@@ -1,10 +1,5 @@
 $(document).ready(function() {
 	///======================///
-	/// GLOBAL VARIABLES
-	///======================///
-	let projecsExist = false;
-
-	///======================///
 	/// FIREBASE INIT
 	///======================///
 
@@ -44,6 +39,12 @@ $(document).ready(function() {
 				</div>
 			`
 		);
+
+		setTimeout(function() {
+			$('.error')
+				.fadeOut()
+				.remove();
+		}, 4000);
 	}
 
 	///======================///
@@ -144,6 +145,7 @@ $(document).ready(function() {
 				<div class="sideBar">
 					<div class="top">
 						<div class="logo">
+							<img src="/images/white-nimble-logo.png" alt="Nimble logo">
 							<h1>Nimble</h1>
 						</div>
 						<nav>
@@ -179,10 +181,6 @@ $(document).ready(function() {
 	function initStart() {
 		$('.main').empty();
 
-		getProjectList(userID);
-
-		console.log(projecsExist);
-
 		const startHTML = `
 			<div class="start">
 				<div class="createProject">
@@ -210,12 +208,6 @@ $(document).ready(function() {
 		e.preventDefault();
 		$('#newProject').focus();
 		$('#newProject').effect('shake');
-	});
-
-	$('main').on('click', '#selectProject', function(e) {
-		e.preventDefault();
-		$('.projectNav li').focus();
-		$('.projectNav li').effect('shake');
 	});
 
 	///======================///
@@ -326,10 +318,16 @@ $(document).ready(function() {
 
 				var uid = firebase.auth().currentUser.uid;
 				document.cookie = `uid=${uid}`;
-				console.log(document.cookie);
+
+				let userID = document.cookie.replace(
+					/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
+					'$1'
+				);
+
+				console.log(userID);
 
 				db.collection('users')
-					.doc(uid)
+					.doc(userID)
 					.set({
 						firstName: firstName,
 						lastName: lastName,
@@ -378,9 +376,8 @@ $(document).ready(function() {
 			.doc(userID)
 			.get()
 			.then(function(doc) {
-				const projectList = doc.data().projects;
-
-				if (projectList != undefined) {
+				if (doc.data().projects != undefined) {
+					const projectList = doc.data().projects;
 					for (const project of projectList) {
 						db.collection('projects')
 							.doc(project)
@@ -408,18 +405,16 @@ $(document).ready(function() {
 								);
 							});
 					}
-				} else {
-					$('#selectProject').prop('disabled', true);
 				}
-			})
-			.catch(function(error) {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-
-				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
+		// .catch(function(error) {
+		// 	const errorCode = error.code;
+		// 	const errorMessage = error.message;
+
+		// 	errorHandling(errorMessage);
+
+		// 	console.log(`User registration error ${errorCode}: ${errorMessage}`);
+		// });
 	}
 
 	// Event listener for creating new cards
@@ -430,9 +425,13 @@ $(document).ready(function() {
 				.attr('id');
 			const newCardContent = $(this).val();
 
-			createCard(newCardContent, parentID);
-
 			$(this).val('');
+
+			if (newCardContent !== '') {
+				createCard(newCardContent, parentID);
+			} else {
+				errorHandling('Your new card cannot be blank. Please try again');
+			}
 		}
 	});
 
@@ -441,9 +440,13 @@ $(document).ready(function() {
 		if (event.key === 'Enter' || event.keyCode === '13') {
 			const projectName = $(this).val();
 
-			createProject(projectName, userID);
-
 			$(this).val('');
+
+			if (projectName !== '') {
+				createProject(projectName, userID);
+			} else {
+				errorHandling('Your new project cannot be blank. Please try again');
+			}
 		}
 	});
 
@@ -477,6 +480,7 @@ $(document).ready(function() {
 	function loadProject(projectID) {
 		console.log(projectID);
 
+		console.log(userID);
 		db.collection('projects')
 			.doc(projectID)
 			.get()
@@ -706,9 +710,13 @@ $(document).ready(function() {
 			const projectID = $('.projectDetails').attr('id');
 			const listName = $(this).val();
 
-			createList(listName, projectID);
-
 			$(this).val('');
+
+			if (listName !== '') {
+				createList(listName, projectID);
+			} else {
+				errorHandling('Your new list cannot be blank. Please try again');
+			}
 		}
 	});
 
