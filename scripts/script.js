@@ -19,15 +19,6 @@ $(document).ready(function() {
 	const db = firebase.firestore();
 
 	///======================///
-	/// AUTH: Store UID from cookies
-	///======================///
-
-	let userID = document.cookie.replace(
-		/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
-		'$1'
-	);
-
-	///======================///
 	/// ERROR HANDLING
 	///======================///
 
@@ -48,6 +39,15 @@ $(document).ready(function() {
 	}
 
 	///======================///
+	/// AUTH: UID Cookie Storage
+	///======================///
+
+	let userID = document.cookie.replace(
+		/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
+		'$1'
+	);
+
+	///======================///
 	/// AUTH: Sign user out
 	///======================///
 
@@ -62,18 +62,9 @@ $(document).ready(function() {
 			.then(function() {
 				// Sign-out successful.
 				document.cookie = 'uid=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-				console.log(
-					document.cookie.replace(
-						/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
-						'$1'
-					)
-				);
-
 				window.location.assign(`#/login`);
 			})
-			.catch(function(error) {
-				// An error happened.
-			});
+			.catch(function(error) {});
 	}
 
 	///======================///
@@ -109,29 +100,6 @@ $(document).ready(function() {
 	const router = Router(routes);
 
 	router.init('/login');
-
-	///==========================///
-	// PROJECT: Check if projects exist
-	///==========================///
-
-	function checkProjectsExist(userID) {
-		db.collection('users')
-			.doc(userID)
-			.get()
-			.then(function(doc) {
-				if (doc.data().projects != undefined) {
-					window.location.replace(`#/project/${doc.data().projects[0]}`);
-					location.reload();
-				} else {
-					window.location.replace(`#/start`);
-					location.reload();
-				}
-			})
-			.catch(function(error) {
-				errorHandling(error);
-				console.log('Error getting document:', error);
-			});
-	}
 
 	///==========================///
 	// LAYOUT: Two column layout
@@ -275,8 +243,6 @@ $(document).ready(function() {
 				const errorCode = error.code;
 				const errorMessage = error.message;
 
-				console.log(`Sign in error ${errorCode}: ${errorMessage}`);
-
 				errorHandling(errorMessage);
 			});
 	}
@@ -326,8 +292,6 @@ $(document).ready(function() {
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
 			.then(function() {
-				console.log('You sucessfully registered!');
-
 				var uid = firebase.auth().currentUser.uid;
 				document.cookie = `uid=${uid}`;
 
@@ -335,8 +299,6 @@ $(document).ready(function() {
 					/(?:(?:^|.*;\s*)uid\s*\=\s*([^;]*).*$)|^.*$/,
 					'$1'
 				);
-
-				console.log(userID);
 
 				db.collection('users')
 					.doc(userID)
@@ -346,8 +308,6 @@ $(document).ready(function() {
 						email: email
 					})
 					.then(function() {
-						console.log('Updated users projects array');
-
 						checkProjectsExist(userID);
 					})
 					.catch(function(error) {
@@ -360,9 +320,6 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
-				// ...
 			});
 	}
 
@@ -375,6 +332,28 @@ $(document).ready(function() {
 
 		loadProject(projectID);
 		getProjectList(userID);
+	}
+
+	///================================///
+	// PROJECT: Check if projects exist
+	///================================///
+
+	function checkProjectsExist(userID) {
+		db.collection('users')
+			.doc(userID)
+			.get()
+			.then(function(doc) {
+				if (doc.data().projects != undefined) {
+					window.location.replace(`#/project/${doc.data().projects[0]}`);
+					location.reload();
+				} else {
+					window.location.replace(`#/start`);
+					location.reload();
+				}
+			})
+			.catch(function(error) {
+				errorHandling(error);
+			});
 	}
 
 	///==============================///
@@ -411,78 +390,17 @@ $(document).ready(function() {
 								const errorMessage = error.message;
 
 								errorHandling(errorMessage);
-
-								console.log(
-									`User registration error ${errorCode}: ${errorMessage}`
-								);
 							});
 					}
 				}
+			})
+			.catch(function(error) {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
 			});
-		// .catch(function(error) {
-		// 	const errorCode = error.code;
-		// 	const errorMessage = error.message;
-
-		// 	errorHandling(errorMessage);
-
-		// 	console.log(`User registration error ${errorCode}: ${errorMessage}`);
-		// });
 	}
-
-	// Event listener for creating new cards
-	$('main').on('keyup', '#newCard', function(e) {
-		if (event.key === 'Enter' || event.keyCode === '13') {
-			const parentID = $(this)
-				.parent()
-				.attr('id');
-			const newCardContent = $(this).val();
-
-			$(this).val('');
-
-			if (newCardContent !== '') {
-				createCard(newCardContent, parentID);
-			} else {
-				errorHandling('Your new card cannot be blank. Please try again');
-			}
-		}
-	});
-
-	// Event listener for creating new project
-	$('main').on('keyup', '#newProject', function(e) {
-		if (event.key === 'Enter' || event.keyCode === '13') {
-			const projectName = $(this).val();
-
-			$(this).val('');
-
-			if (projectName !== '') {
-				createProject(projectName, userID);
-			} else {
-				errorHandling('Your new project cannot be blank. Please try again');
-			}
-		}
-	});
-
-	// Event listener for deleting cards
-	$('main').on('click', '.deleteCard', function(e) {
-		e.preventDefault();
-		const cardID = $(this)
-			.parent()
-			.attr('id');
-
-		deleteCard(this, cardID);
-	});
-
-	// Event listener for deleting lists
-
-	$('main').on('click', '.deleteList', function(e) {
-		e.preventDefault();
-
-		const listID = $(this)
-			.closest('.list')
-			.attr('id');
-
-		deleteList(listID);
-	});
 
 	///================================///
 	// PROJECT PAGE: Load project data
@@ -569,10 +487,6 @@ $(document).ready(function() {
 												const errorMessage = error.message;
 
 												errorHandling(errorMessage);
-
-												console.log(
-													`User registration error ${errorCode}: ${errorMessage}`
-												);
 											});
 									}
 								}
@@ -583,10 +497,6 @@ $(document).ready(function() {
 								const errorMessage = error.message;
 
 								errorHandling(errorMessage);
-
-								console.log(
-									`User registration error ${errorCode}: ${errorMessage}`
-								);
 							});
 						createSortableList();
 					}
@@ -597,8 +507,6 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -606,14 +514,27 @@ $(document).ready(function() {
 	// PROJECT PAGE: Create new project
 	///=================================///
 
+	// Event listener for creating new project
+	$('main').on('keyup', '#newProject', function(e) {
+		if (event.key === 'Enter' || event.keyCode === '13') {
+			const projectName = $(this).val();
+
+			$(this).val('');
+
+			if (projectName !== '') {
+				createProject(projectName, userID);
+			} else {
+				errorHandling('Your new project cannot be blank. Please try again');
+			}
+		}
+	});
+
 	function createProject(projectName, userID) {
 		db.collection('projects')
 			.add({
 				name: projectName
 			})
 			.then(function(docRef) {
-				console.log('Created new project!');
-
 				let newProject = `
 										<li>
 											<a href="#/project/${docRef.id}" class="projectLink">
@@ -632,18 +553,12 @@ $(document).ready(function() {
 					.update({
 						projects: firebase.firestore.FieldValue.arrayUnion(docRef.id)
 					})
-					.then(function() {
-						console.log('Updated user projects array');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			})
 			.catch(function(error) {
@@ -651,8 +566,6 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -660,14 +573,30 @@ $(document).ready(function() {
 	// PROJECT PAGE: Create new card
 	///==============================///
 
+	// Event listener for creating new cards
+	$('main').on('keyup', '#newCard', function(e) {
+		if (event.key === 'Enter' || event.keyCode === '13') {
+			const parentID = $(this)
+				.parent()
+				.attr('id');
+			const newCardContent = $(this).val();
+
+			$(this).val('');
+
+			if (newCardContent !== '') {
+				createCard(newCardContent, parentID);
+			} else {
+				errorHandling('Your new card cannot be blank. Please try again');
+			}
+		}
+	});
+
 	function createCard(content, listID) {
 		db.collection('cards')
 			.add({
 				content: content
 			})
 			.then(function(docRef) {
-				console.log('Created new card!');
-
 				let newCard = `
 										<li class="card" id=${docRef.id}>
 										<a class="deleteCard" href="#"><i class="fas fa-times"></i></a>
@@ -684,18 +613,12 @@ $(document).ready(function() {
 				db.collection('lists')
 					.doc(listID)
 					.update({ cards: sortedIDs })
-					.then(function() {
-						console.log('Updated list array!');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			})
 			.catch(function(error) {
@@ -703,8 +626,6 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -735,8 +656,6 @@ $(document).ready(function() {
 				name: name
 			})
 			.then(function(docRef) {
-				console.log('Created new list!');
-
 				let newList = `
 										<div class="list" id="${docRef.id}">
 										<div class="listHeader">
@@ -762,24 +681,17 @@ $(document).ready(function() {
 				createSortableCards();
 
 				const sortedIDs = $('.listContainer').sortable('toArray');
-				console.log(sortedIDs);
 
 				// Update list array in project document
 				db.collection('projects')
 					.doc(projectID)
 					.update({ lists: sortedIDs })
-					.then(function() {
-						console.log('Updated list array!');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			})
 			.catch(function(error) {
@@ -787,8 +699,6 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -806,23 +716,15 @@ $(document).ready(function() {
 			stop(event, ui) {
 				var sortedIDs = $('.listContainer').sortable('toArray');
 
-				console.log(sortedIDs);
-
 				db.collection('projects')
 					.doc(this.id)
 					.update({ lists: sortedIDs })
-					.then(function() {
-						console.log('Document successfully written!');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			}
 		});
@@ -846,28 +748,19 @@ $(document).ready(function() {
 					.attr('id');
 
 				const sortedIDs = $(`#${parentID} .cardContainer`).sortable('toArray');
-				console.log(sortedIDs);
 
 				db.collection('lists')
 					.doc(parentID)
 					.update({ cards: sortedIDs })
-					.then(function() {
-						console.log('Document successfully written!');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			},
 			receive: function(event, ui) {
-				console.log('Item was received');
-
 				const parentID = $(this)
 					.parent()
 					.attr('id');
@@ -877,18 +770,12 @@ $(document).ready(function() {
 				db.collection('lists')
 					.doc(parentID)
 					.update({ cards: sortedIDs })
-					.then(function() {
-						console.log('Document successfully written!');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			}
 		});
@@ -897,6 +784,16 @@ $(document).ready(function() {
 	///===========================///
 	// PROJECT PAGE: Delete cards
 	///===========================///
+
+	// Event listener for deleting cards
+	$('main').on('click', '.deleteCard', function(e) {
+		e.preventDefault();
+		const cardID = $(this)
+			.parent()
+			.attr('id');
+
+		deleteCard(this, cardID);
+	});
 
 	function deleteCard(itemObj, cardID) {
 		const listID = $(itemObj)
@@ -907,28 +804,19 @@ $(document).ready(function() {
 			.doc(cardID)
 			.delete()
 			.then(function() {
-				console.log('Document successfully deleted!');
-
 				$(`#${cardID}`).remove();
 
 				const sortedIDs = $(`#${listID} .cardContainer`).sortable('toArray');
-				console.log(sortedIDs);
 
 				db.collection('lists')
 					.doc(listID)
 					.update({ cards: sortedIDs })
-					.then(function() {
-						console.log('Document was deleted and updated the array');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			})
 			.catch(function(error) {
@@ -936,14 +824,24 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
 	///===========================///
 	// PROJECT PAGE: Delete lists
 	///===========================///
+
+	// Event listener for deleting lists
+
+	$('main').on('click', '.deleteList', function(e) {
+		e.preventDefault();
+
+		const listID = $(this)
+			.closest('.list')
+			.attr('id');
+
+		deleteList(listID);
+	});
 
 	function deleteList(listID) {
 		const projectID = $('.projectDetails').attr('id');
@@ -952,28 +850,19 @@ $(document).ready(function() {
 			.doc(listID)
 			.delete()
 			.then(function() {
-				console.log('Document successfully deleted!');
-
 				$(`#${listID}`).remove();
 
 				const sortedIDs = $(`.listContainer`).sortable('toArray');
-				console.log(sortedIDs);
 
 				db.collection('projects')
 					.doc(projectID)
 					.update({ lists: sortedIDs })
-					.then(function() {
-						console.log('Document was deleted and updated the array');
-					})
+					.then(function() {})
 					.catch(function(error) {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 
 						errorHandling(errorMessage);
-
-						console.log(
-							`User registration error ${errorCode}: ${errorMessage}`
-						);
 					});
 			})
 			.catch(function(error) {
@@ -981,8 +870,6 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				errorHandling(errorMessage);
-
-				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 });
