@@ -490,15 +490,11 @@ $(document).ready(function() {
 
 	// Load all lists and cards + display them in the DOM
 	function loadProject(projectID) {
-		console.log(projectID);
-
-		console.log(userID);
 		db.collection('projects')
 			.doc(projectID)
 			.get()
 			.then(function(res) {
 				// Loop through they array of lists and insert in the DOM
-				console.log(res.data());
 
 				$('.main').append(
 					`
@@ -804,6 +800,9 @@ $(document).ready(function() {
 	function createSortableList() {
 		$('.listContainer').sortable({
 			handle: '.listHeader',
+			scroll: true,
+			scrollSensitivity: 10,
+			scrollSpeed: 10,
 			stop(event, ui) {
 				var sortedIDs = $('.listContainer').sortable('toArray');
 
@@ -838,9 +837,9 @@ $(document).ready(function() {
 		$('.cardContainer').sortable({
 			connectWith: '.cardContainer',
 			handle: '.cardContent',
-			// scroll: true,
-			// scrollSensitivity: 10,
-			// scrollSpeed: 10,
+			scroll: true,
+			scrollSensitivity: 10,
+			scrollSpeed: 10,
 			stop(event, ui) {
 				const parentID = $(this)
 					.parent()

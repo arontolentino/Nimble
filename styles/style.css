@@ -208,7 +208,6 @@ input::-moz-focus-inner {
 }
 
 .form input {
-	font-family: 'Roboto', sans-serif;
 	outline: 0;
 	background: #f2f2f2;
 	width: 100%;
@@ -217,10 +216,10 @@ input::-moz-focus-inner {
 	padding: 15px;
 	box-sizing: border-box;
 	font-size: 14px;
+	border-radius: 5px;
 }
 
 .form button {
-	font-family: 'Roboto', sans-serif;
 	text-transform: uppercase;
 	outline: 0;
 	background: #1d6adb;
@@ -229,15 +228,14 @@ input::-moz-focus-inner {
 	padding: 15px;
 	color: #ffffff;
 	font-size: 14px;
-	-webkit-transition: all 0.3 ease;
 	transition: all 0.3 ease;
-	cursor: pointer;
+	border-radius: 5px;
 }
 
 .form button:hover,
 .form button:active,
 .form button:focus {
-	background: #1d6adb;
+	background: #3281f7;
 }
 
 .form .message {
@@ -249,46 +247,6 @@ input::-moz-focus-inner {
 .form .message a {
 	color: #1d6adb;
 	text-decoration: none;
-}
-
-.container {
-	position: relative;
-	z-index: 1;
-	max-width: 300px;
-	margin: 0 auto;
-}
-
-.container:before,
-.container:after {
-	content: '';
-	display: block;
-	clear: both;
-}
-
-.container .info {
-	margin: 50px auto;
-	text-align: center;
-}
-
-.container .info h1 {
-	margin: 0 0 15px;
-	padding: 0;
-	font-size: 36px;
-	font-weight: 300;
-	color: #1a1a1a;
-}
-
-.container .info span {
-	color: #4d4d4d;
-	font-size: 12px;
-}
-
-.container .info span a {
-	color: #000000;
-	text-decoration: none;
-}
-.container .info span .fa {
-	color: #ef3b3a;
 }
 
 /* USER-GENERATED STYLES */
@@ -408,8 +366,12 @@ a:focus {
 
 .card .deleteCard {
 	position: absolute;
-	right: 13px;
-	top: 7px;
+	right: 10px;
+	top: 1px;
+}
+
+.deleteCard i {
+	font-size: 1rem;
 }
 
 .deleteCard:visited,
@@ -420,7 +382,7 @@ a:focus {
 }
 
 .deleteCard:hover {
-	color: #cc0000;
+	color: #ffa700;
 }
 
 .newListInput {
@@ -520,7 +482,7 @@ nav a:focus {
 .deleteList {
 	position: absolute;
 	right: 13px;
-	top: 10px;
+	top: 2px;
 }
 
 .deleteList:visited,
@@ -531,7 +493,7 @@ nav a:focus {
 }
 
 .deleteList:hover {
-	color: #cc0000;
+	color: #ffa700;
 }
 
 /* .main {
