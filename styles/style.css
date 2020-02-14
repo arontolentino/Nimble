@@ -597,6 +597,21 @@ input:focus {
 	border: 3px solid #ffa700;
 }
 
+.error {
+	position: absolute;
+	text-align: center;
+	margin: 0 auto;
+	top: 0;
+	max-width: 700px;
+	padding: 1rem 5rem;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
+	background-color: red;
+	color: #fff;
+}
+
 ///======================///
 // PROJECT
 ///======================///

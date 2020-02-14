@@ -33,6 +33,20 @@ $(document).ready(function() {
 	);
 
 	///======================///
+	/// ERROR HANDLING
+	///======================///
+
+	function errorHandling(errorMsg) {
+		$('main').append(
+			`
+				<div class="error">
+					<p>${errorMsg}</p>
+				</div>
+			`
+		);
+	}
+
+	///======================///
 	/// AUTH: Sign user out
 	///======================///
 
@@ -113,6 +127,7 @@ $(document).ready(function() {
 				}
 			})
 			.catch(function(error) {
+				errorHandling(error);
 				console.log('Error getting document:', error);
 			});
 	}
@@ -249,8 +264,6 @@ $(document).ready(function() {
 				return firebase.auth().signInWithEmailAndPassword(email, password);
 			})
 			.then(function() {
-				console.log('You sucessfully logged in!');
-
 				var uid = firebase.auth().currentUser.uid;
 				document.cookie = `uid=${uid}`;
 				console.log(document.cookie);
@@ -263,6 +276,8 @@ $(document).ready(function() {
 				const errorMessage = error.message;
 
 				console.log(`Sign in error ${errorCode}: ${errorMessage}`);
+
+				errorHandling(errorMessage);
 			});
 	}
 
@@ -334,6 +349,8 @@ $(document).ready(function() {
 				const errorCode = error.code;
 				const errorMessage = error.message;
 
+				errorHandling(errorMessage);
+
 				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 				// ...
 			});
@@ -381,7 +398,14 @@ $(document).ready(function() {
 								);
 							})
 							.catch(function(error) {
-								console.log('Error getting documents: ', error);
+								const errorCode = error.code;
+								const errorMessage = error.message;
+
+								errorHandling(errorMessage);
+
+								console.log(
+									`User registration error ${errorCode}: ${errorMessage}`
+								);
 							});
 					}
 				} else {
@@ -389,7 +413,12 @@ $(document).ready(function() {
 				}
 			})
 			.catch(function(error) {
-				console.log('Error getting document:', error);
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -524,21 +553,40 @@ $(document).ready(function() {
 												);
 											})
 											.catch(function(error) {
-												console.log('Error getting documents: ', error);
+												const errorCode = error.code;
+												const errorMessage = error.message;
+
+												errorHandling(errorMessage);
+
+												console.log(
+													`User registration error ${errorCode}: ${errorMessage}`
+												);
 											});
 									}
 								}
 								createSortableCards();
 							})
 							.catch(function(error) {
-								console.log('Error getting documents: ', error);
+								const errorCode = error.code;
+								const errorMessage = error.message;
+
+								errorHandling(errorMessage);
+
+								console.log(
+									`User registration error ${errorCode}: ${errorMessage}`
+								);
 							});
 						createSortableList();
 					}
 				}
 			})
 			.catch(function(error) {
-				console.log('Error getting documents: ', error);
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -576,11 +624,23 @@ $(document).ready(function() {
 						console.log('Updated user projects array');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			})
 			.catch(function(error) {
-				console.error('Error writing document: ', error);
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -616,11 +676,23 @@ $(document).ready(function() {
 						console.log('Updated list array!');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			})
 			.catch(function(error) {
-				console.error('Error writing document: ', error);
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -684,11 +756,23 @@ $(document).ready(function() {
 						console.log('Updated list array!');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			})
 			.catch(function(error) {
-				console.error('Error writing document: ', error);
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -712,7 +796,14 @@ $(document).ready(function() {
 						console.log('Document successfully written!');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			}
 		});
@@ -745,7 +836,14 @@ $(document).ready(function() {
 						console.log('Document successfully written!');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			},
 			receive: function(event, ui) {
@@ -764,7 +862,14 @@ $(document).ready(function() {
 						console.log('Document successfully written!');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			}
 		});
@@ -797,11 +902,23 @@ $(document).ready(function() {
 						console.log('Document was deleted and updated the array');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			})
 			.catch(function(error) {
-				console.error('Error removing document: ', error);
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 
@@ -830,11 +947,23 @@ $(document).ready(function() {
 						console.log('Document was deleted and updated the array');
 					})
 					.catch(function(error) {
-						console.error('Error writing document: ', error);
+						const errorCode = error.code;
+						const errorMessage = error.message;
+
+						errorHandling(errorMessage);
+
+						console.log(
+							`User registration error ${errorCode}: ${errorMessage}`
+						);
 					});
 			})
 			.catch(function(error) {
-				console.error('Error removing document: ', error);
+				const errorCode = error.code;
+				const errorMessage = error.message;
+
+				errorHandling(errorMessage);
+
+				console.log(`User registration error ${errorCode}: ${errorMessage}`);
 			});
 	}
 });
