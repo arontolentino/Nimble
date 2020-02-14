@@ -178,11 +178,119 @@ input::-moz-focus-inner {
 }
 
 ///======================///
-// Log In
+// BASE
+///======================///
+
+html {
+	font-size: 62.5%;
+	font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+	font-size: 2.2rem;
+}
+
+h2 {
+	font-size: 1.6rem;
+}
+
+p {
+	font-size: 1.4rem;
+	font-weight: 400;
+}
+
+input {
+	padding-left: 1rem;
+}
+
+a:visited,
+a:link,
+a:focus {
+	color: #fff;
+	font-size: 1.4rem;
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.btn {
+	background-color: #ffa700;
+	padding: 1rem 2rem;
+	margin: 0 auto;
+	border-radius: 5px;
+	border: 0;
+	font-family: inherit;
+	color: #fff;
+	font-size: 1.2rem;
+}
+
+input:focus {
+	border: 3px solid #ffa700;
+}
+
+.error {
+	position: absolute;
+	text-align: center;
+	margin: 0 auto;
+	top: 10px;
+	max-width: 700px;
+	padding: 1rem 5rem;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	background-color: firebrick;
+	color: #fff;
+	border-radius: 5px;
+	box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+///======================///
+// LAYOUT
+///======================///
+
+.twoColumn {
+	display: flex;
+	height: 100vh;
+}
+
+.sideBar {
+	flex: 0 0 250px;
+	padding: 3rem 0 6rem 3rem;
+	background-color: #1d6adb;
+	color: #fff;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: ;
+	justify-content: space-between;
+}
+
+.main {
+	background: #f4f4f4;
+}
+
+///======================///
+// LOGIN & REGISTRATION
 ///======================///
 
 .login {
 	margin: auto;
+}
+
+.formLogo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 3rem;
+}
+
+.formLogo img {
+	width: 15%;
+	margin-right: 1.5rem;
+}
+
+.formLogo h1 {
+	font-size: 3.2rem;
+	text-transform: uppercase;
 }
 
 .formContainer {
@@ -249,59 +357,83 @@ input::-moz-focus-inner {
 	text-decoration: none;
 }
 
-/* USER-GENERATED STYLES */
+///======================///
+// SIDEBAR
+///======================///
 
-html {
-	font-size: 62.5%;
-	font-family: 'Roboto', sans-serif;
+.logo {
+	margin-bottom: 2rem;
+	display: flex;
 }
 
-h1 {
-	font-size: 2.2rem;
+.logo img {
+	width: 10%;
+	margin-right: 1rem;
+	height: auto;
 }
 
-h2 {
+.logo h1 {
 	font-size: 1.6rem;
+
+	text-transform: uppercase;
 }
 
-p {
-	font-size: 1.4rem;
-	font-weight: 400;
+nav h2 {
+	font-size: 1.2rem;
+	color: #f0f0f0;
+	text-transform: uppercase;
+	margin-bottom: 1rem;
 }
 
-input {
-	padding-left: 1rem;
+nav ul {
+	list-style: none;
+	margin-bottom: 2rem;
+	position: relative;
+	max-height: 40rem;
+	overflow-y: auto;
 }
 
-a:visited,
-a:link,
-a:focus {
-	color: #fff;
+nav li {
 	font-size: 1.4rem;
 	font-weight: 500;
+	padding: 1rem 0;
+	transition: all 0.2s;
+}
+
+nav li:hover {
+	background-color: #2275ef;
+}
+
+nav a {
+	margin: 1rem 1rem;
 	text-decoration: none;
 }
 
-.twoColumn {
-	display: flex;
-	height: 100vh;
-}
-
-.sideBar {
-	flex: 0 0 250px;
-	padding: 3rem 0 6rem 3rem;
-	background-color: #1d6adb;
+nav a:visited,
+nav a:link,
+nav a:focus {
 	color: #fff;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: ;
-	justify-content: space-between;
 }
 
-.main {
-	background: #f4f4f4;
+.signOut {
+	padding: 1rem 0;
 }
+
+.signOut:hover {
+	background: #2275ef;
+}
+
+.signOut a {
+	padding-left: 1rem;
+}
+
+.projectNav li:focus {
+	border: 3px solid #ffa700;
+}
+
+///======================///
+// PROJECT
+///======================///
 
 .projectDetails {
 	margin-bottom: 3rem;
@@ -360,10 +492,6 @@ a:focus {
 	margin: 1rem 1rem;
 }
 
-/* .card:not(:last-child) {
-	margin-bottom: 1rem;
-} */
-
 .card .deleteCard {
 	position: absolute;
 	right: 10px;
@@ -413,64 +541,6 @@ a:focus {
 	border-radius: 5px;
 }
 
-.logo {
-	margin-bottom: 2rem;
-	display: flex;
-}
-
-.logo img {
-	width: 10%;
-	margin-right: 1rem;
-	height: auto;
-}
-
-.logo h1 {
-	font-size: 1.6rem;
-
-	text-transform: uppercase;
-}
-
-nav h2 {
-	font-size: 1.2rem;
-	color: #f0f0f0;
-	text-transform: uppercase;
-	margin-bottom: 1rem;
-}
-
-nav ul {
-	list-style: none;
-	margin-bottom: 2rem;
-	position: relative;
-	max-height: 40rem;
-	overflow-y: auto;
-}
-
-nav li {
-	font-size: 1.4rem;
-	font-weight: 500;
-	padding: 1rem 0;
-	transition: all 0.2s;
-}
-
-nav li:hover {
-	background-color: #2275ef;
-}
-
-nav a {
-	margin: 1rem 1rem;
-	text-decoration: none;
-}
-
-nav a:visited,
-nav a:link,
-nav a:focus {
-	color: #fff;
-}
-
-.active {
-	background-color: #2275ef;
-}
-
 #newList {
 	width: 272px;
 }
@@ -496,12 +566,9 @@ nav a:focus {
 	color: #ffa700;
 }
 
-/* .main {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-} */
+///======================///
+// START PAGE
+///======================///
 
 .start {
 	display: flex;
@@ -528,84 +595,4 @@ nav a:focus {
 
 .createProject .btn {
 	margin: 0 0.5rem;
-}
-
-.btn:disabled {
-	background: bisque;
-}
-
-#selectProject {
-	background: #97db1d;
-}
-
-.btn {
-	background-color: #ffa700;
-	padding: 1rem 2rem;
-	margin: 0 auto;
-	border-radius: 5px;
-	border: 0;
-	font-family: inherit;
-	color: #fff;
-	font-size: 1.2rem;
-}
-
-input:focus {
-	border: 3px solid #ffa700;
-}
-
-.signOut {
-	padding: 1rem 0;
-}
-
-.signOut:hover {
-	background: #2275ef;
-}
-
-.signOut a {
-	padding-left: 1rem;
-}
-
-.projectNav li:focus {
-	border: 3px solid #ffa700;
-}
-
-.error {
-	position: absolute;
-	text-align: center;
-	margin: 0 auto;
-	top: 10px;
-	max-width: 700px;
-	padding: 1rem 5rem;
-	margin: 0 auto;
-	left: 0;
-	right: 0;
-	background-color: firebrick;
-	color: #fff;
-	border-radius: 5px;
-	box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-.formLogo {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-bottom: 3rem;
-}
-
-.formLogo img {
-	width: 15%;
-	margin-right: 1.5rem;
-}
-
-.formLogo h1 {
-	font-size: 3.2rem;
-	text-transform: uppercase;
-}
-
-///======================///
-// PROJECT
-///======================///
-
-#project {
-	margin-left: 3rem;
 }
