@@ -605,13 +605,16 @@ nav a:focus {
 	top: 150px;
 	left: -17px;
 	color: #fff;
+	z-index: 100;
+	display: none;
+	box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-.toggle:hover {
-	background: #ffa700;
-}
+@media only screen and (max-width: 425px) {
+	.toggle {
+		display: block;
+	}
 
-@media only screen and (max-width: 600px) {
 	.listContainer {
 		width: 100vw;
 	}
