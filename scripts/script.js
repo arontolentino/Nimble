@@ -1,25 +1,30 @@
-///======================///
-/// FIREBASE INIT
-///======================///
-
-const firebaseConfig = {
-	apiKey: 'AIzaSyAkWrlB49WYt1Er1-pnmIJo65MgNsWYKds',
-	authDomain: 'nimble-io.firebaseapp.com',
-	databaseURL: 'https://nimble-io.firebaseio.com',
-	projectId: 'nimble-io',
-	storageBucket: 'nimble-io.appspot.com',
-	messagingSenderId: '796601610417',
-	appId: '1:796601610417:web:df8ea13e938768ef793290'
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
-
 $(document).ready(function() {
 	///======================///
-	// Firebase Auth Listener
+	/// GLOBAL VARIABLES
+	///======================///
+	let projecsExist = false;
+
+	///======================///
+	/// FIREBASE INIT
+	///======================///
+
+	const firebaseConfig = {
+		apiKey: 'AIzaSyAkWrlB49WYt1Er1-pnmIJo65MgNsWYKds',
+		authDomain: 'nimble-io.firebaseapp.com',
+		databaseURL: 'https://nimble-io.firebaseio.com',
+		projectId: 'nimble-io',
+		storageBucket: 'nimble-io.appspot.com',
+		messagingSenderId: '796601610417',
+		appId: '1:796601610417:web:df8ea13e938768ef793290'
+	};
+
+	// Initialize Firebase
+	firebase.initializeApp(firebaseConfig);
+
+	const db = firebase.firestore();
+
+	///======================///
+	/// AUTH: Store UID from cookies
 	///======================///
 
 	let userID = document.cookie.replace(
@@ -27,7 +32,9 @@ $(document).ready(function() {
 		'$1'
 	);
 
-	// signOut();
+	///======================///
+	/// AUTH: Sign user out
+	///======================///
 
 	$('main').on('click', '.signOut', function() {
 		signOut();
@@ -55,7 +62,7 @@ $(document).ready(function() {
 	}
 
 	///======================///
-	// ROUTING (DIRECTOR LIBRARY)
+	// ROUTING
 	///======================///
 
 	const home = function() {};
@@ -72,9 +79,6 @@ $(document).ready(function() {
 		initStart();
 	};
 
-	const dashboard = function() {
-		initDashboard();
-	};
 	const project = function(projectID) {
 		initTwoColumn();
 		initProject(projectID);
@@ -91,9 +95,31 @@ $(document).ready(function() {
 
 	router.init('/login');
 
-	///======================///
-	// Two Column
-	///======================///
+	///==========================///
+	// PROJECT: Check if projects exist
+	///==========================///
+
+	function checkProjectsExist(userID) {
+		db.collection('users')
+			.doc(userID)
+			.get()
+			.then(function(doc) {
+				if (doc.data().projects != undefined) {
+					window.location.replace(`#/project/${doc.data().projects[0]}`);
+					location.reload();
+				} else {
+					window.location.replace(`#/start`);
+					location.reload();
+				}
+			})
+			.catch(function(error) {
+				console.log('Error getting document:', error);
+			});
+	}
+
+	///==========================///
+	// LAYOUT: Two column layout
+	///==========================///
 
 	function initTwoColumn() {
 		$('main').empty();
@@ -101,23 +127,30 @@ $(document).ready(function() {
 		const twoColumn = `
 			<div class="twoColumn">
 				<div class="sideBar">
-					<div class="logo">
-						<h1>Nimble</h1>
-					</div>
-					<nav>
-						<h2>Projects</h2>
-						<ul class="projectNav"></ul>
+					<div class="top">
+						<div class="logo">
+							<h1>Nimble</h1>
+						</div>
+						<nav>
+							<h2>Projects</h2>
+							<ul class="projectNav"></ul>
+						</nav>
 						<input
-							type="text"
-							class="newCard"
-							id="newProject"
-							name="newProject"
-							placeholder="Add new project"
-						/>
-						<button class="btn signOut">Sign Out</button>
-					</nav>
+								type="text"
+								class="newCard"
+								id="newProject"
+								name="newProject"
+								placeholder="Add new project"
+							/>
+					</div>
+					<div class="bottom">
+						<div class="signOut">
+							<a href="#">Sign Out</a>
+						</div>	
+					</div>
 				</div>
-				<div class="main"></div>
+				<div class="main">
+				</div>
 			</div>
 		`;
 
@@ -125,38 +158,53 @@ $(document).ready(function() {
 	}
 
 	///======================///
-	// Start
+	// START PAGE
 	///======================///
 
 	function initStart() {
 		$('.main').empty();
 
-		console.log(userID);
-
 		getProjectList(userID);
 
-		// console.log(userID);
+		console.log(projecsExist);
 
 		const startHTML = `
 			<div class="start">
 				<div class="createProject">
-					<h2>It looks like you haven't made a project just yet. Shall we create one?</h2>
-					<button class="btn projectBtnFocus">Add Project</button>
+					<h1>To get started, please create a project.</h1>
+					<button class="btn projectBtnFocus" id="addProject">Add Project</button>
 				</div>
 			</div>
 		`;
 
-		$('.main').append(startHTML);
+		setTimeout(function() {
+			const firstProjectLink = $('.projectNav li a')
+				.first()
+				.attr('href');
+
+			if (firstProjectLink != undefined) {
+				window.location.assign(firstProjectLink);
+				location.reload();
+			} else {
+				$('.main').append(startHTML);
+			}
+		}, 1000);
 	}
 
-	$('main').on('click', '.projectBtnFocus', function(e) {
+	$('main').on('click', '#addProject', function(e) {
 		e.preventDefault();
-		console.log('Clicked!');
 		$('#newProject').focus();
+		$('#newProject').effect('shake');
+	});
+
+	$('main').on('click', '#selectProject', function(e) {
+		e.preventDefault();
+		$('.projectNav li').focus();
+		$('.projectNav li').effect('shake');
 	});
 
 	///======================///
-	// Log In
+	// LOGIN PAGE
 	///======================///
 
 	function initLogIn() {
@@ -207,8 +255,7 @@ $(document).ready(function() {
 				document.cookie = `uid=${uid}`;
 				console.log(document.cookie);
 
-				window.location.assign(`#/start`);
-				location.reload();
+				checkProjectsExist(userID);
 			})
 			.catch(function(error) {
 				// Handle Errors here.
@@ -220,7 +267,7 @@ $(document).ready(function() {
 	}
 
 	///======================///
-	// REGISTER
+	// REGISTER PAGE
 	///======================///
 
 	function initRegister() {
@@ -276,8 +323,7 @@ $(document).ready(function() {
 					.then(function() {
 						console.log('Updated users projects array');
 
-						window.location.assign(`#/start`);
-						location.reload();
+						checkProjectsExist(userID);
 					})
 					.catch(function(error) {
 						console.error('Error writing document: ', error);
@@ -294,25 +340,19 @@ $(document).ready(function() {
 	}
 
 	///======================///
-	// DASHBOARD
-	///======================///
-
-	function initDashboard() {
-		$('main').empty();
-		$('main').append('<h1>Dashboard</h1>');
-	}
-
-	///======================///
-	// PROJECT
+	// PROJECT PAGE
 	///======================///
 
 	function initProject(projectID) {
-		console.log(projectID);
 		$('.main').empty();
+
 		loadProject(projectID);
 		getProjectList(userID);
-		$('.listContainer').sortable();
 	}
+
+	///==============================///
+	// PROJECT PAGE: Get project list
+	///==============================///
 
 	function getProjectList(userID) {
 		$('.projectNav').empty();
@@ -323,43 +363,35 @@ $(document).ready(function() {
 			.then(function(doc) {
 				const projectList = doc.data().projects;
 
-				for (const project of projectList) {
-					db.collection('projects')
-						.doc(project)
-						.get()
-						.then(function(doc) {
-							const projectName = doc.data().name;
-							$('.projectNav').append(
-								`
-									<li class="active">
+				if (projectList != undefined) {
+					for (const project of projectList) {
+						db.collection('projects')
+							.doc(project)
+							.get()
+							.then(function(doc) {
+								const projectName = doc.data().name;
+								$('.projectNav').append(
+									`
+									<li>
 										<a href="#/project/${project}" class="projectLink">
 											${projectName}
 										</a>
 									</li>
 								`
-							);
-						})
-						.catch(function(error) {
-							console.log('Error getting documents: ', error);
-						});
+								);
+							})
+							.catch(function(error) {
+								console.log('Error getting documents: ', error);
+							});
+					}
+				} else {
+					$('#selectProject').prop('disabled', true);
 				}
 			})
 			.catch(function(error) {
 				console.log('Error getting document:', error);
 			});
 	}
-
-	// Event listener for creating new list
-	$('main').on('keyup', '#newList', function(e) {
-		if (event.key === 'Enter' || event.keyCode === '13') {
-			const projectID = $('.projectDetails').attr('id');
-			const listName = $(this).val();
-
-			createList(listName, projectID);
-
-			$(this).val('');
-		}
-	});
 
 	// Event listener for creating new cards
 	$('main').on('keyup', '#newCard', function(e) {
@@ -407,6 +439,11 @@ $(document).ready(function() {
 
 		deleteList(listID);
 	});
+
+	///================================///
+	// PROJECT PAGE: Load project data
+	///================================///
+
 	// Load all lists and cards + display them in the DOM
 	function loadProject(projectID) {
 		console.log(projectID);
@@ -420,20 +457,18 @@ $(document).ready(function() {
 
 				$('.main').append(
 					`
-						<div class="projectDetails" id="${projectID}">
-							<h1>Project: ${res.data().name}</h1>
-							<input
-							type="text"
-							class="newCard"
-							id="newList"
-							name="newCard"
-							placeholder="Add new list"
-						/>
-						</div>
-						<div class="board">
-							
-							<div class="listContainer" id="${projectID}">
+						<div id="project">
+							<div class="projectDetails" id="${projectID}">
+								<h1>Project: ${res.data().name}</h1>
+								<input
+									type="text"
+									class="newCard"
+									id="newList"
+									name="newCard"
+									placeholder="Add new list"
+								/>
 							</div>
+							<div class="listContainer" id="${projectID}"></div>
 						</div>
 					`
 				);
@@ -507,7 +542,10 @@ $(document).ready(function() {
 			});
 	}
 
-	// Create new project
+	///=================================///
+	// PROJECT PAGE: Create new project
+	///=================================///
+
 	function createProject(projectName, userID) {
 		db.collection('projects')
 			.add({
@@ -517,7 +555,7 @@ $(document).ready(function() {
 				console.log('Created new project!');
 
 				let newProject = `
-										<li class="active">
+										<li>
 											<a href="#/project/${docRef.id}" class="projectLink">
 												${projectName}
 											</a>
@@ -546,7 +584,10 @@ $(document).ready(function() {
 			});
 	}
 
-	// Create new card
+	///==============================///
+	// PROJECT PAGE: Create new card
+	///==============================///
+
 	function createCard(content, listID) {
 		db.collection('cards')
 			.add({
@@ -582,6 +623,22 @@ $(document).ready(function() {
 				console.error('Error writing document: ', error);
 			});
 	}
+
+	///================================///
+	// PROJECT PAGE: Create new list
+	///================================///
+
+	// Event listener for creating new list
+	$('main').on('keyup', '#newList', function(e) {
+		if (event.key === 'Enter' || event.keyCode === '13') {
+			const projectID = $('.projectDetails').attr('id');
+			const listName = $(this).val();
+
+			createList(listName, projectID);
+
+			$(this).val('');
+		}
+	});
 
 	// Create new list
 	function createList(name, projectID) {
@@ -635,6 +692,10 @@ $(document).ready(function() {
 			});
 	}
 
+	///==============================================///
+	// PROJECT PAGE: Create sortable list (jQuery UI)
+	///==============================================///
+
 	// Create sortable list
 	function createSortableList() {
 		$('.listContainer').sortable({
@@ -656,6 +717,10 @@ $(document).ready(function() {
 			}
 		});
 	}
+
+	///==============================================///
+	// PROJECT PAGE: Create sortable cards (jQuery UI)
+	///==============================================///
 
 	// Create sortable cards
 	function createSortableCards() {
@@ -705,6 +770,10 @@ $(document).ready(function() {
 		});
 	}
 
+	///===========================///
+	// PROJECT PAGE: Delete cards
+	///===========================///
+
 	function deleteCard(itemObj, cardID) {
 		const listID = $(itemObj)
 			.closest('.list')
@@ -736,6 +805,10 @@ $(document).ready(function() {
 			});
 	}
 
+	///===========================///
+	// PROJECT PAGE: Delete lists
+	///===========================///
+
 	function deleteList(listID) {
 		const projectID = $('.projectDetails').attr('id');
 
@@ -764,6 +837,4 @@ $(document).ready(function() {
 				console.error('Error removing document: ', error);
 			});
 	}
-
-	// Delete project
 });
