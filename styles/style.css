@@ -177,9 +177,9 @@ input::-moz-focus-inner {
 	overflow: hidden;
 }
 
-///======================///
-// Log In
-///======================///
+/* ///======================/// */
+/* // Log In */
+/* ///======================/// */
 
 .login {
 	margin: auto;
@@ -249,7 +249,28 @@ input::-moz-focus-inner {
 	text-decoration: none;
 }
 
-/* USER-GENERATED STYLES */
+.formLogo {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 3rem;
+}
+
+.formLogo img {
+	width: 15%;
+	margin-bottom: 1rem;
+}
+
+.formLogo h1 {
+	font-size: 3.2rem;
+	text-transform: uppercase;
+	margin-bottom: 1rem;
+}
+
+/* ///======================/// */
+/* BASE */
+/* ///======================/// */
 
 html {
 	font-size: 62.5%;
@@ -282,6 +303,25 @@ a:focus {
 	text-decoration: none;
 }
 
+.btn {
+	background-color: #ffa700;
+	padding: 1rem 2rem;
+	margin: 0 auto;
+	border-radius: 5px;
+	border: 0;
+	font-family: inherit;
+	color: #fff;
+	font-size: 1.2rem;
+}
+
+input:focus {
+	border: 3px solid #ffa700;
+}
+
+/* ///======================/// */
+/* // LAYOUT */
+/* ///======================/// */
+
 .twoColumn {
 	display: flex;
 	height: 100vh;
@@ -302,6 +342,10 @@ a:focus {
 .main {
 	background: #f4f4f4;
 }
+
+/* ///======================/// */
+/* // PROJECT */
+/* ///======================/// */
 
 .projectDetails {
 	margin-bottom: 3rem;
@@ -359,10 +403,6 @@ a:focus {
 	position: relative;
 	margin: 1rem 1rem;
 }
-
-/* .card:not(:last-child) {
-	margin-bottom: 1rem;
-} */
 
 .card .deleteCard {
 	position: absolute;
@@ -426,7 +466,6 @@ a:focus {
 
 .logo h1 {
 	font-size: 1.6rem;
-
 	text-transform: uppercase;
 }
 
@@ -496,13 +535,6 @@ nav a:focus {
 	color: #ffa700;
 }
 
-/* .main {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-} */
-
 .start {
 	display: flex;
 	flex-direction: column;
@@ -528,29 +560,6 @@ nav a:focus {
 
 .createProject .btn {
 	margin: 0 0.5rem;
-}
-
-.btn:disabled {
-	background: bisque;
-}
-
-#selectProject {
-	background: #97db1d;
-}
-
-.btn {
-	background-color: #ffa700;
-	padding: 1rem 2rem;
-	margin: 0 auto;
-	border-radius: 5px;
-	border: 0;
-	font-family: inherit;
-	color: #fff;
-	font-size: 1.2rem;
-}
-
-input:focus {
-	border: 3px solid #ffa700;
 }
 
 .signOut {
@@ -583,21 +592,4 @@ input:focus {
 	color: #fff;
 	border-radius: 5px;
 	box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-.formLogo {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-bottom: 3rem;
-}
-
-.formLogo img {
-	width: 15%;
-	margin-right: 1.5rem;
-}
-
-.formLogo h1 {
-	font-size: 3.2rem;
-	text-transform: uppercase;
 }

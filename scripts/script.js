@@ -192,6 +192,9 @@ $(document).ready(function() {
 						<div class="formLogo">
 							<img src="/images/blue-nimble-logo.png" alt="Nimble logo">
 							<h1>Nimble</h1>
+							<p><strong>Demo:</strong></p>
+							<p>demo@juno.com</p>
+							<p>password</p>
 						</div>
 						<form class="login-form">
 							<input type="email" id="email" placeholder="email"/>
